@@ -1,0 +1,387 @@
+@import url('https://cn-font.claude-code-best.win/packages/xuandongkaishu/dist/XuandongKaishu/result.css');
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #4a90e2;
+  --ifm-color-primary-dark: #3780d8;
+  --ifm-color-primary-darker: #2c78d4;
+  --ifm-color-primary-darkest: #2063b4;
+  --ifm-color-primary-light: #5ea0ec;
+  --ifm-color-primary-lighter: #67a8ef;
+  --ifm-color-primary-lightest: #82bbf3;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(74, 144, 226, 0.1);
+  --ifm-menu-color-background-active: rgba(74, 144, 226, 0.12);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #8cbfff;
+  --ifm-color-primary-dark: #75b1ff;
+  --ifm-color-primary-darker: #6aa9ff;
+  --ifm-color-primary-darkest: #4993f7;
+  --ifm-color-primary-light: #a3cdff;
+  --ifm-color-primary-lighter: #aed4ff;
+  --ifm-color-primary-lightest: #cfe5ff;
+  --docusaurus-highlighted-code-line-bg: rgba(140, 191, 255, 0.2);
+  --ifm-menu-color-background-active: rgba(140, 191, 255, 0.18);
+}
+
+/* 极简无框无背景卡片与分页导航规则 */
+.card,
+.pagination-nav__link {
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.pagination-nav__link:hover,
+.card:hover {
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 0.85;
+}
+
+[data-theme='dark'] .card,
+[data-theme='dark'] .pagination-nav__link {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .pagination-nav__link:hover,
+[data-theme='dark'] .card:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 页脚淡色与暗色响应式紧凑样式 */
+.footer {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 0.6rem 0 !important;
+}
+
+.footer__bottom {
+  margin-top: 0 !important;
+}
+
+.footer a {
+  color: #475569;
+}
+
+.footer a:hover {
+  color: #0f172a;
+}
+
+[data-theme='dark'] .footer {
+  background-color: #0f172a !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .footer a {
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .footer a:hover {
+  color: #ffffff;
+}
+
+/* 侧边栏与 HideOnScroll 导航栏联动遮罩效果 (与 Docusaurus 官方实现一致) */
+@media (min-width: 997px) {
+  aside[class*='docSidebarContainer'],
+  .theme-doc-sidebar-container {
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    align-self: flex-start !important;
+    overflow-x: hidden !important;
+  }
+
+  aside[class*='docSidebarContainer'] > div,
+  .theme-doc-sidebar-container > div {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* 侧边栏 Logo 置于主导航栏下方：导航栏展开时被遮盖，向上滚动收起导航栏时露 */
+[class*='sidebarLogo'] {
+  display: flex !important;
+}
+
+/* 通告栏斜向淡蓝色条纹背景样式 */
+.theme-announcement-bar {
+  --site-announcement-bar-stripe-color1: #e0f2fe;
+  --site-announcement-bar-stripe-color2: #bae6fd;
+
+  background: repeating-linear-gradient(
+    35deg,
+    var(--site-announcement-bar-stripe-color1),
+    var(--site-announcement-bar-stripe-color1) 20px,
+    var(--site-announcement-bar-stripe-color2) 10px,
+    var(--site-announcement-bar-stripe-color2) 40px
+  ) !important;
+  font-weight: 600;
+  color: #0369a1 !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+[data-theme='dark'] .theme-announcement-bar {
+  --site-announcement-bar-stripe-color1: #0c4a6e;
+  --site-announcement-bar-stripe-color2: #075985;
+  color: #e0f2fe !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 主导航栏 Logo、标题与导航菜单项垂直居中对齐 */
+.navbar__brand {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar__brand img,
+.navbar__logo img,
+[class*='sidebarLogo'] img {
+  height: 1.6rem !important;
+  max-height: 1.6rem !important;
+  width: auto;
+  align-self: center !important;
+  transform: translateY(2.5px) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.navbar__title,
+[class*='sidebarLogo'] span,
+[class*='sidebarLogo'] strong,
+[class*='sidebarLogo'] b {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+  font-family: 'XuandongKaishu', cursive, serif !important;
+  font-weight: 500 !important;
+  font-size: 1.35rem !important;
+}
+
+.footer-site-title {
+  font-family: 'XuandongKaishu', cursive, serif !important;
+  font-size: 1.05em !important;
+  font-weight: 500 !important;
+}
+
+/* 序记品牌标题后追加版权/注册商标标识 ® */
+.navbar__title::after,
+[class*='sidebarLogo'] span::after,
+[class*='sidebarLogo'] strong::after,
+[class*='sidebarLogo'] b::after,
+.footer-site-title::after {
+  content: '®';
+  font-size: 0.52em;
+  vertical-align: super;
+  margin-left: 2px;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  font-weight: normal !important;
+  opacity: 0.85;
+}
+
+@media (min-width: 997px) {
+  .navbar__items,
+  .navbar__item {
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+
+/* 首页 (Home Page) 导航栏保持固定显示，滚动时不隐藏沉没 */
+:root:has([class*='heroBanner']) .navbar,
+body:has([class*='heroBanner']) .navbar,
+html:has([class*='heroBanner']) .navbar--hidden,
+body:has([class*='heroBanner']) .navbar--hidden {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 1:1 复刻 Docusaurus 官方移动端侧边栏抽屉 (Mobile Navbar Sidebar) 紧凑纯净样式 */
+.navbar-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  width: 280px !important;
+  max-width: 80vw !important;
+  background-color: #ffffff !important;
+  z-index: 10000 !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+:global([data-theme='dark']) .navbar-sidebar,
+[data-theme='dark'] .navbar-sidebar {
+  background-color: #1b1b1d !important;
+}
+
+.navbar-sidebar__brand {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 3.5rem !important;
+  min-height: 3.5rem !important;
+  padding: 0 1rem !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f2f2f2 !important;
+  box-sizing: border-box !important;
+}
+
+:global([data-theme='dark']) .navbar-sidebar__brand,
+[data-theme='dark'] .navbar-sidebar__brand {
+  background-color: #1b1b1d !important;
+  border-bottom-color: #2e2e32 !important;
+}
+
+.navbar-sidebar__items {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  padding: 0.4rem 0 !important;
+  margin: 0 !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.navbar-sidebar__items > div {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.navbar-sidebar .menu {
+  padding: 0.2rem 0 !important;
+  margin: 0 !important;
+}
+
+.navbar-sidebar .menu__list {
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.navbar-sidebar .menu__list-item {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.navbar-sidebar .menu__link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 0.55rem 1.25rem !important;
+  font-size: 0.98rem !important;
+  font-weight: 500 !important;
+  color: #1c1e21 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  background-color: transparent !important;
+  line-height: 1.4 !important;
+  transition: background-color 0.15s ease !important;
+}
+
+:global([data-theme='dark']) .navbar-sidebar .menu__link,
+[data-theme='dark'] .navbar-sidebar .menu__link {
+  color: #f5f6f7 !important;
+}
+
+.navbar-sidebar .menu__link:hover,
+.navbar-sidebar .menu__link--active {
+  background-color: rgba(2, 132, 199, 0.1) !important;
+  color: #0284c7 !important;
+  text-decoration: none !important;
+}
+
+:global([data-theme='dark']) .navbar-sidebar .menu__link:hover,
+[data-theme='dark'] .navbar-sidebar .menu__link--active {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+  text-decoration: none !important;
+}
+
+/* 侧边栏遮罩全屏暗色覆盖 */
+.navbar-sidebar__backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(2px);
+  z-index: 9999 !important;
+}
+
+/* 全站 a 标签 紧贴文本字宽的荧光涂抹视效（根据文字内容自适应宽度） */
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']) {
+  text-decoration: none !important;
+  display: inline-block !important;
+  width: fit-content !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  border-radius: 4px;
+  padding: 0.1em 0.35em !important;
+  transition: background-color 0.18s ease-in-out, color 0.18s ease-in-out !important;
+}
+
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):hover {
+  text-decoration: none !important;
+  background-color: rgba(2, 132, 199, 0.14) !important;
+  color: #0284c7 !important;
+}
+
+[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):hover {
+  background-color: rgba(56, 189, 248, 0.22) !important;
+  color: #38bdf8 !important;
+}
+
+
+
+
+
+
+
+
+
+
+

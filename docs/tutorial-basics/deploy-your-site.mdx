@@ -1,0 +1,33 @@
+---
+sidebar_position: 5
+sidebar_label: '部署你的网站'
+---
+
+# 部署你的网站
+
+Docusaurus 是一个**静态网站生成器** (也称为 **[Jamstack](https://jamstack.org/)**)。
+
+它会将你的网站构建为纯粹的**静态 HTML、JavaScript 和 CSS 文件**。
+
+## 构建生产产物
+
+为**生产环境**构建网站：
+
+```bash
+pnpm build
+```
+
+静态资源文件将自动生成在 `build` 文件夹中。
+
+## 本地预览与部署
+
+在本地测试生产环境构建产物：
+
+```bash
+pnpm serve
+```
+
+现在访问 [http://localhost:3000/](http://localhost:3000/) 即可预览 `build` 文件夹的内容。
+
+你现在可以将 `build` 文件夹轻松部署到**几乎任何托管平台**上（详情请阅读 **[官方部署指南](https://docusaurus.io/docs/deployment)**）。
+

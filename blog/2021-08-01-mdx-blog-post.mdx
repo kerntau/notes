@@ -1,0 +1,25 @@
+---
+slug: mdx-blog-post
+title: MDX 交互式博客文章
+authors: [slorber]
+tags: [docusaurus]
+---
+
+博客文章同样支持 [Docusaurus Markdown 特性](https://docusaurus.io/docs/markdown-features)，比如嵌入 [MDX](https://mdxjs.com/)。
+
+:::tip[提示]
+
+你可以利用 React 的能力来创作富交互的博客文章。
+
+:::
+
+{/* truncate */}
+
+例如，使用 JSX 创建一个可点击的互动按钮：
+
+```js
+<button onClick={() => alert('按钮被点击了！')}>点击我！</button>
+```
+
+<button onClick={() => alert('按钮被点击了！')}>点击我！</button>
+

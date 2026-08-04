@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+sidebar_label: '文档版本管理'
+---
+
+# 文档版本管理
+
+Docusaurus 能够非常方便地管理文档的多个历史版本。
+
+## 创建一个文档版本
+
+发布项目的 `1.0` 版本：
+
+```bash
+pnpm docusaurus docs:version 1.0
+```
+
+`docs` 文件夹会被自动复制保存为 `versioned_docs/version-1.0`，同时生成 `versions.json` 文件。
+
+你的文档现在拥有 2 个版本：
+
+- `1.0` 位于 `http://localhost:3000/docs/`（1.0 稳定版）
+- `current` 位于 `http://localhost:3000/docs/next/`（**未发布的最新开发版**）
+
+## 添加版本切换下拉框
+
+为了让用户在不同版本间无缝切换，可以添加版本下拉框。
+
+修改 `docusaurus.config.ts` 文件：
+
+```ts title="docusaurus.config.ts"
+export default {
+  themeConfig: {
+    navbar: {
+      items: [
+        // highlight-start
+        {
+          type: 'docsVersionDropdown',
+        },
+        // highlight-end
+      ],
+    },
+  },
+};
+```
+
