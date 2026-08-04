@@ -219,141 +219,123 @@ body:has([class*='heroBanner']) .navbar--hidden {
   visibility: visible !important;
 }
 
-/* 1:1 复刻 Docusaurus 官方移动端侧边栏抽屉 (Mobile Navbar Sidebar) 紧凑纯净样式 */
+/* ---------------------------------------------------- */
+/* 移动端侧边栏抽屉 (Mobile Sidebar Drawer) 结构重构与溢出修复 */
+/* ---------------------------------------------------- */
+
 .navbar-sidebar {
-  position: fixed !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
+  background-color: #ffffff !important;
   height: 100vh !important;
   height: 100dvh !important;
-  width: 280px !important;
-  max-width: 80vw !important;
-  background-color: #ffffff !important;
-  z-index: 10000 !important;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: stretch !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: hidden !important;
-}
-
-:global([data-theme='dark']) .navbar-sidebar,
-[data-theme='dark'] .navbar-sidebar {
-  background-color: #1b1b1d !important;
-}
-
-.navbar-sidebar__brand {
-  position: relative !important;
+  position: fixed !important;
   top: 0 !important;
   left: 0 !important;
-  width: 100% !important;
-  height: 3.5rem !important;
-  min-height: 3.5rem !important;
-  padding: 0 1rem !important;
-  margin: 0 !important;
+  bottom: 0 !important;
+  z-index: 1050 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-theme='dark'] .navbar-sidebar {
+  background-color: #1b1b1d !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 侧边栏顶栏品牌与关闭按钮规范 */
+.navbar-sidebar__brand {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  background-color: #ffffff !important;
+  height: var(--ifm-navbar-height, 60px) !important;
+  padding: 0 1rem !important;
   border-bottom: 1px solid #f2f2f2 !important;
-  box-sizing: border-box !important;
+  background-color: inherit !important;
 }
 
-:global([data-theme='dark']) .navbar-sidebar__brand,
 [data-theme='dark'] .navbar-sidebar__brand {
-  background-color: #1b1b1d !important;
   border-bottom-color: #2e2e32 !important;
 }
 
+.navbar-sidebar__close {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.4rem !important;
+  margin-left: auto !important;
+  color: var(--ifm-color-content) !important;
+}
+
+/* 菜单项平滑滑动与防止二级菜单 (← 回到主菜单) 横向溢出暴露 */
 .navbar-sidebar__items {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  padding: 0.4rem 0 !important;
-  margin: 0 !important;
-  overflow-y: auto !important;
-  flex: 1 !important;
-  -webkit-overflow-scrolling: touch;
+  display: flex !important;
+  width: 200% !important;
+  transition: transform var(--ifm-transition-fast, 0.2s) ease-in-out !important;
+  overflow: hidden !important;
 }
 
-.navbar-sidebar__items > div {
-  padding: 0 !important;
-  margin: 0 !important;
+.navbar-sidebar__item {
+  width: 50% !important;
+  max-width: 50% !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
 }
 
-.navbar-sidebar .menu {
-  padding: 0.2rem 0 !important;
-  margin: 0 !important;
+/* 二级菜单返回按钮规范 */
+.navbar-sidebar__back {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0.75rem 1.25rem !important;
+  background-color: rgba(2, 132, 199, 0.08) !important;
+  color: #0284c7 !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.15) !important;
+  cursor: pointer !important;
 }
 
-.navbar-sidebar .menu__list {
-  display: block !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  list-style: none !important;
-}
-
-.navbar-sidebar .menu__list-item {
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
+[data-theme='dark'] .navbar-sidebar__back {
+  background-color: rgba(56, 189, 248, 0.12) !important;
+  color: #38bdf8 !important;
+  border-bottom-color: rgba(56, 189, 248, 0.2) !important;
 }
 
 .navbar-sidebar .menu__link {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
-  padding: 0.55rem 1.25rem !important;
-  font-size: 0.98rem !important;
-  font-weight: 500 !important;
-  color: #1c1e21 !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  background-color: transparent !important;
-  line-height: 1.4 !important;
-  transition: background-color 0.15s ease !important;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  border-radius: 0;
+  line-height: 1.4;
 }
 
-:global([data-theme='dark']) .navbar-sidebar .menu__link,
 [data-theme='dark'] .navbar-sidebar .menu__link {
-  color: #f5f6f7 !important;
+  color: #f5f6f7;
 }
 
 .navbar-sidebar .menu__link:hover,
 .navbar-sidebar .menu__link--active {
-  background-color: rgba(2, 132, 199, 0.1) !important;
-  color: #0284c7 !important;
-  text-decoration: none !important;
+  background-color: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+  text-decoration: none;
 }
 
-:global([data-theme='dark']) .navbar-sidebar .menu__link:hover,
+[data-theme='dark'] .navbar-sidebar .menu__link:hover,
 [data-theme='dark'] .navbar-sidebar .menu__link--active {
-  background-color: rgba(56, 189, 248, 0.15) !important;
-  color: #38bdf8 !important;
-  text-decoration: none !important;
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  text-decoration: none;
 }
 
-/* 侧边栏遮罩全屏暗色覆盖 */
+/* 侧边栏遮罩 */
 .navbar-sidebar__backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background-color: rgba(15, 23, 42, 0.45) !important;
   backdrop-filter: blur(2px);
-  z-index: 9999 !important;
 }
 
 /* 全站 a 标签 紧贴文本字宽的荧光涂抹视效（根据文字内容自适应宽度） */
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']) {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']) {
   text-decoration: none !important;
   display: inline-block !important;
   width: fit-content !important;
@@ -364,13 +346,13 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   transition: background-color 0.18s ease-in-out, color 0.18s ease-in-out !important;
 }
 
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):hover {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):hover {
   text-decoration: none !important;
   background-color: rgba(2, 132, 199, 0.14) !important;
   color: #0284c7 !important;
 }
 
-[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):hover {
+[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):hover {
   background-color: rgba(56, 189, 248, 0.22) !important;
   color: #38bdf8 !important;
 }
