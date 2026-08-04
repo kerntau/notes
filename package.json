@@ -32,6 +32,24 @@
     "@types/react": "^19.0.0",
     "typescript": "~6.0.2"
   },
+  "pnpm": {
+    "overrides": {
+      "memfs": "4.66.0",
+      "@jsonjoy.com/fs-core": "4.66.0",
+      "@jsonjoy.com/fs-fsa": "4.66.0",
+      "@jsonjoy.com/fs-node-builtins": "4.66.0",
+      "@jsonjoy.com/fs-node-to-fsa": "4.66.0",
+      "@jsonjoy.com/fs-node-utils": "4.66.0",
+      "@jsonjoy.com/fs-node": "4.66.0",
+      "@jsonjoy.com/fs-print": "4.66.0",
+      "@jsonjoy.com/fs-snapshot": "4.66.0",
+      "baseline-browser-mapping": "2.11.11",
+      "electron-to-chromium": "1.5.399",
+      "node-releases": "2.0.51",
+      "terser": "5.39.0",
+      "ws": "8.18.0"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.5%",
