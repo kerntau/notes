@@ -1,0 +1,45 @@
+---
+sidebar_position: 1
+sidebar_label: 'Manage Docs Versions'
+---
+
+# Manage Docs Versions
+
+Docusaurus makes it very easy to manage multiple versions of your documentation.
+
+## Create a Docs Version
+
+Release version `1.0` of your project:
+
+```bash
+pnpm docusaurus docs:version 1.0
+```
+
+The `docs` folder will be automatically copied and saved as `versioned_docs/version-1.0`, and a `versions.json` file will be generated.
+
+Your documentation now has 2 versions:
+
+- `1.0` at `http://localhost:3000/docs/` (stable release)
+- `current` at `http://localhost:3000/docs/next/` (**unreleased latest development version**)
+
+## Add a Version Dropdown
+
+To allow users to seamlessly switch between versions, add a version dropdown.
+
+Modify the `docusaurus.config.ts` file:
+
+```ts title="docusaurus.config.ts"
+export default {
+  themeConfig: {
+    navbar: {
+      items: [
+        // highlight-start
+        {
+          type: 'docsVersionDropdown',
+        },
+        // highlight-end
+      ],
+    },
+  },
+};
+```

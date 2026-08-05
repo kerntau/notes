@@ -1,0 +1,95 @@
+---
+sidebar_position: 4
+sidebar_label: 'Markdown Features'
+---
+
+# Markdown Features
+
+Docusaurus supports standard **[Markdown](https://daringfireball.net/projects/markdown/syntax)** syntax along with a set of **extended features**.
+
+## Front Matter
+
+Markdown documents can use [Front Matter](https://jekyllrb.com/docs/front-matter/) at the top to define metadata:
+
+```text title="my-doc.md"
+// highlight-start
+---
+id: my-doc-id
+title: My Document Title
+description: My Document Description
+slug: /my-custom-url
+---
+// highlight-end
+
+Markdown body content
+```
+
+## Headings
+
+Use standard "#" syntax to write headings. Headings are automatically added to the right-side table of contents. The number of `#` symbols corresponds to the heading level.
+
+```md
+## Heading Name
+
+Body content
+```
+
+## Links
+
+Both relative and absolute Markdown links are supported:
+
+```md
+See how to [Create a Page](./create-a-page.mdx).
+```
+
+**Result:** See how to [Create a Page](./create-a-page.mdx).
+
+## Code Blocks
+
+Syntax highlighting and titled code blocks are supported:
+
+```jsx title="src/components/HelloDocusaurus.js"
+function HelloDocusaurus() {
+  return <h1>Hello, Docusaurus!</h1>;
+}
+```
+
+## Admonitions
+
+Docusaurus has a special admonition syntax:
+
+:::tip[Tip]
+
+Use this powerful feature option
+
+:::
+
+:::danger[Warning]
+
+This action is potentially dangerous
+
+:::
+
+## MDX and React Components
+
+[MDX](https://mdxjs.com/) makes your documentation more **interactive** by allowing you to embed React components directly within Markdown:
+
+export const Highlight = ({children, color}) => (
+  <span
+    style={{
+      backgroundColor: color,
+      borderRadius: '20px',
+      color: '#fff',
+      padding: '10px',
+      cursor: 'pointer',
+    }}
+    onClick={() => {
+      alert(`You clicked color ${color} with content ${children}`);
+    }}>
+    {children}
+  </span>
+);
+
+This is <Highlight color="#25c2a0">Docusaurus Green</Highlight>!
+
+This is <Highlight color="#1877F2">Facebook Blue</Highlight>!
