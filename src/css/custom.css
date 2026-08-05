@@ -357,7 +357,27 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   color: #38bdf8 !important;
 }
 
+/* 文档页脚"编辑此页 + 最后更新时间"单行紧凑布局 */
+.theme-doc-footer-edit-meta-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.4rem 0 !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0 !important;
+}
 
+.theme-doc-footer-edit-meta-row > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 隐藏开发模式下的 "Simulated during dev" 提示 */
+.theme-last-updated i {
+  display: none !important;
+}
 
 
 
