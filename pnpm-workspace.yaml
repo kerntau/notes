@@ -1,7 +1,7 @@
-onlyBuiltDependencies:
-  - '@swc/core'
-  - core-js
-  - es5-ext
+allowBuilds:
+  '@swc/core': true
+  core-js: true
+  es5-ext: true
 
 overrides:
   memfs: "4.60.0"
