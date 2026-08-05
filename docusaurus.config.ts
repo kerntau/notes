@@ -44,20 +44,9 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans', 'en'],
-    localeConfigs: {
-      'zh-Hans': {
-        label: '简体中文',
-      },
-      en: {
-        label: 'English',
-      },
-    },
+    locales: ['zh-Hans'],
   },
 
   presets: [
@@ -66,6 +55,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          showLastUpdateTime: true,
           editUrl:
             'https://github.com/kerntau/notes/tree/main/',
         },
@@ -120,10 +110,7 @@ const config: Config = {
           activeBaseRegex: '/docs/',
         },
         {to: '/blog', label: '教程', position: 'left'},
-        {
-          type: 'localeDropdown',
-          position: 'right',
-        },
+
         {
           href: 'https://github.com/kerntau/notes',
           label: 'GitHub',
