@@ -44,10 +44,19 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
-  i18n: {
-    defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans'],
-  },
+  themes: [
+    [
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      {
+        hashed: true,
+        language: ['en', 'zh'],
+        highlightSearchTermsOnTargetPage: true,
+        explicitSearchResultPath: true,
+        docsRouteBasePath: '/docs',
+        blogRouteBasePath: '/blog',
+      },
+    ],
+  ],
 
   presets: [
     [
@@ -110,12 +119,7 @@ const config: Config = {
           activeBaseRegex: '/docs/',
         },
         {to: '/blog', label: '教程', position: 'left'},
-
-        {
-          href: 'https://github.com/kerntau/notes',
-          label: 'GitHub',
-          position: 'right',
-        },
+        {to: '/about', label: '关于', position: 'left'},
       ],
     },
     footer: {

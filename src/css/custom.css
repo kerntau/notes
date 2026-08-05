@@ -201,6 +201,17 @@
   opacity: 0.85;
 }
 
+/* 页脚 (Footer) 间距压缩与对称化 */
+.footer {
+  padding: 1.5rem 0 !important;
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 0.75rem 0 1rem !important;
+  }
+}
+
 @media (min-width: 997px) {
   .navbar__items,
   .navbar__item {
@@ -335,7 +346,7 @@ body:has([class*='heroBanner']) .navbar--hidden {
 }
 
 /* 全站 a 标签 紧贴文本字宽的荧光涂抹视效（根据文字内容自适应宽度） */
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']) {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']) {
   text-decoration: none !important;
   display: inline-block !important;
   width: fit-content !important;
@@ -346,37 +357,189 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   transition: background-color 0.18s ease-in-out, color 0.18s ease-in-out !important;
 }
 
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):hover {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):hover {
   text-decoration: none !important;
   background-color: rgba(2, 132, 199, 0.14) !important;
   color: #0284c7 !important;
 }
 
-[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):hover {
+[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):hover {
   background-color: rgba(56, 189, 248, 0.22) !important;
   color: #38bdf8 !important;
 }
 
-/* 文档页脚"编辑此页 + 最后更新时间"单行紧凑布局 */
+/* 文档页脚"编辑此页 + 最后更新时间"单行紧凑并排布局与溢出修复 */
+.theme-doc-footer {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 .theme-doc-footer-edit-meta-row {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
   justify-content: space-between !important;
+  gap: 0.5rem !important;
   padding: 0.4rem 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   margin-top: 0.5rem !important;
   margin-bottom: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  font-size: 0.82rem !important;
 }
 
 .theme-doc-footer-edit-meta-row > * {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  max-width: 50% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 0.82rem !important;
+}
+
+.theme-doc-footer-edit-meta-row a,
+.theme-doc-footer-edit-meta-row span,
+.theme-doc-footer-edit-meta-row div,
+.theme-doc-footer-edit-meta-row strong {
+  font-size: inherit !important;
+}
+
+/* 移动端细调字号，确保小屏幕下并排且不换行 */
+@media (max-width: 576px) {
+  .theme-doc-footer-edit-meta-row {
+    font-size: 0.75rem !important;
+  }
 }
 
 /* 隐藏开发模式下的 "Simulated during dev" 提示 */
-.theme-last-updated i {
+.theme-last-updated i,
+.theme-last-updated em,
+[class*='lastUpdated'] i,
+[class*='lastUpdated'] em {
   display: none !important;
+}
+
+/* ---------------------------------------------------- */
+/* 导航栏搜索框与移动端搜索按钮美化 */
+/* ---------------------------------------------------- */
+
+.navbarSearchContainer {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 0.5rem !important;
+}
+
+.navbar__search {
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+.navbar__search-input {
+  border-radius: 20px !important;
+  padding: 0.4rem 0.9rem 0.4rem 2.2rem !important;
+  font-size: 0.85rem !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid transparent !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.navbar__search-input:focus {
+  background-color: var(--ifm-background-color, #ffffff) !important;
+  border-color: var(--ifm-color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
+}
+
+[data-theme='dark'] .navbar__search-input {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .navbar__search-input:focus {
+  background-color: #1b1b1d !important;
+}
+
+/* 移动端与平板端 (<= 996px) 搜索框折叠图标样式美化 */
+@media (max-width: 996px) {
+  .navbarSearchContainer {
+    margin-right: 0.25rem !important;
+  }
+
+  .navbar__search {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* 隐藏 ctrl K 键盘快捷键提示框，防止与图标重叠 */
+  .navbar__search kbd,
+  .navbar__search [class*='searchBarShortcut'],
+  .navbar__search [class*='hitnote'],
+  .navbar__search [class*='shortcut'] {
+    display: none !important;
+  }
+
+  /* 搜索放大镜图标绝对垂直水平居中 */
+  .navbar__search [class*='searchIcon'],
+  .navbar__search svg {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    transition: left 0.2s ease, transform 0.2s ease !important;
+  }
+
+  .navbar__search-input {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    cursor: pointer !important;
+    color: transparent !important;
+  }
+
+  /* 未聚焦折叠状态隐藏 placeholder 文本 */
+  .navbar__search-input:not(:focus)::placeholder {
+    color: transparent !important;
+    opacity: 0 !important;
+  }
+
+  .navbar__search-input:focus::placeholder {
+    color: var(--ifm-color-content-secondary) !important;
+    opacity: 1 !important;
+  }
+
+  .navbar__search-input:focus {
+    width: 11rem !important;
+    border-radius: 20px !important;
+    padding: 0.4rem 0.9rem 0.4rem 2.2rem !important;
+    color: var(--ifm-color-content) !important;
+  }
+
+  /* 展开聚焦后图标移动至左侧 padding 位置 */
+  .navbar__search:has(.navbar__search-input:focus) [class*='searchIcon'],
+  .navbar__search:has(.navbar__search-input:focus) svg {
+    left: 0.75rem !important;
+    transform: translateY(-50%) !important;
+  }
+
+  [data-theme='dark'] .navbar__search-input {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
 }
 
 

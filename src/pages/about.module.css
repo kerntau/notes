@@ -1,0 +1,275 @@
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 5.5rem;
+}
+
+.title {
+  font-family: 'XuandongKaishu', cursive, serif, var(--ifm-font-family-base);
+  font-size: 2.75rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  text-align: center;
+  margin: 0 0 2.5rem;
+  letter-spacing: 2px;
+}
+
+/* 主卡片 */
+.card {
+  position: relative;
+  background: var(--ifm-card-background-color, var(--ifm-background-surface-color));
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 16px;
+  padding: 2.5rem 2.75rem;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* 顶部信息栏 */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.identity {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  color: var(--ifm-heading-color) !important;
+  transition: opacity 0.18s ease;
+  background: none !important;
+  padding: 0 !important;
+}
+
+.identity:hover {
+  opacity: 0.8;
+  background: none !important;
+}
+
+.mark {
+  color: var(--ifm-color-content) !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+.repo {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  color: var(--ifm-heading-color) !important;
+  letter-spacing: -0.3px !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
+
+/* 字数统计 */
+.wordcount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.num {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--ifm-color-primary);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.unit {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* 简介段落说明 */
+.description {
+  font-size: 0.95rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.65;
+  margin: 0 0 1.75rem;
+  letter-spacing: 0.2px;
+}
+
+.emailText {
+  color: var(--ifm-color-primary) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  display: inline !important;
+  padding: 0 !important;
+  background: none !important;
+}
+
+.emailText:hover {
+  opacity: 0.8;
+  text-decoration: none !important;
+}
+
+/* 贡献热力图区域 (桌面端：开阔大气、无灰底抠框) */
+.heatmapWrapper {
+  border-top: 1px dashed var(--ifm-color-emphasis-200);
+  padding-top: 1.6rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.profileLink {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary) !important;
+  text-decoration: none !important;
+  background: none !important;
+  padding: 0 !important;
+  transition: opacity 0.15s ease;
+}
+
+.profileLink:hover {
+  opacity: 0.8;
+  text-decoration: none !important;
+}
+
+.heatmap {
+  background: none;
+  border: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+}
+
+/* 移动端适配 (@media max-width: 640px) */
+@media (max-width: 640px) {
+  .page {
+    padding: 1.75rem 0.75rem 3rem;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card {
+    padding: 1.15rem;
+    border-radius: 12px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .topBar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .identity {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .repo {
+    font-size: 0.98rem !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mark {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0 !important;
+  }
+
+  .wordcount {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .num {
+    font-size: 1.25rem;
+  }
+
+  .unit {
+    font-size: 0.8rem;
+  }
+
+  .description {
+    font-size: 0.86rem;
+    line-height: 1.6;
+    margin-bottom: 1.15rem;
+    word-break: break-word;
+  }
+
+  .heatmapWrapper {
+    padding-top: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sectionHeader {
+    margin-bottom: 0.65rem;
+  }
+
+  .sectionTitle {
+    font-size: 0.82rem;
+  }
+
+  .profileLink {
+    font-size: 0.78rem;
+  }
+
+  .heatmap {
+    background-color: var(--ifm-color-emphasis-100);
+    border: 1px solid var(--ifm-color-emphasis-200);
+    border-radius: 10px;
+    padding: 0.65rem;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+
+  .img {
+    display: block;
+    width: 100%;
+    min-width: 600px;
+    height: auto;
+  }
+}

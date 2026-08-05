@@ -4,6 +4,8 @@
   "private": true,
   "packageManager": "pnpm@11.20.0",
   "scripts": {
+    "prestart": "node scripts/count-words.js",
+    "prebuild": "node scripts/count-words.js",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
@@ -31,6 +33,7 @@
     "@docusaurus/module-type-aliases": "3.10.2",
     "@docusaurus/tsconfig": "3.10.2",
     "@docusaurus/types": "3.10.2",
+    "@easyops-cn/docusaurus-search-local": "^0.55.3",
     "@types/react": "^19.0.0",
     "typescript": "~6.0.2"
   },
