@@ -66,24 +66,84 @@
   background-color: transparent !important;
 }
 
-/* 页脚淡色与暗色响应式紧凑样式 */
+/* 超薄单行微型脚标 (固定 36px 高度) */
 .footer {
   background-color: #f8fafc !important;
   border-top: 1px solid #e2e8f0;
   color: #64748b;
-  padding: 0.6rem 0 !important;
+  padding: 0 !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
-.footer__bottom {
-  margin-top: 0 !important;
+.footer * {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
 }
 
-.footer a {
-  color: #475569;
+.footer__bottom,
+.footer__container {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.footer a:hover {
-  color: #0f172a;
+.footer__copyright {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: 0.72rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+
+.footer a,
+.footer-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  color: #475569 !important;
+  text-decoration: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+.footer a:hover,
+.footer-link:hover {
+  color: #0f172a !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.footer a img,
+.footer-link img {
+  width: 15px !important;
+  height: 15px !important;
+  min-width: 15px !important;
+  min-height: 15px !important;
+  object-fit: contain !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
 }
 
 [data-theme='dark'] .footer {
@@ -92,12 +152,78 @@
   color: #94a3b8;
 }
 
-[data-theme='dark'] .footer a {
-  color: #cbd5e1;
+[data-theme='dark'] .footer a,
+[data-theme='dark'] .footer-link {
+  color: #cbd5e1 !important;
 }
 
-[data-theme='dark'] .footer a:hover {
-  color: #ffffff;
+[data-theme='dark'] .footer a:hover,
+[data-theme='dark'] .footer-link:hover {
+  color: #ffffff !important;
+}
+
+/* ---------------------------------------------------- */
+/* 移动端底栏 (Footer) 响应式自适应适配                    */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
+  .footer {
+    height: auto !important;
+    min-height: 36px !important;
+    max-height: none !important;
+    padding: 6px 12px !important;
+  }
+
+  .footer__copyright {
+    white-space: normal !important;
+    flex-wrap: wrap !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+    font-size: 0.7rem !important;
+    row-gap: 4px !important;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* 首页全屏单视口布局 (homepage-fullscreen)                */
+/* html 根挂载 .homepage-fullscreen 类后生效               */
+/* 确保 公告栏 + 导航栏 + Hero + Footer 共存于 100vh 视口  */
+/* ---------------------------------------------------- */
+
+html.homepage-fullscreen,
+html.homepage-fullscreen body {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
+html.homepage-fullscreen #__docusaurus,
+html.homepage-fullscreen #__docusaurus > div {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* 关于页仅在桌面端保持单视口全屏 */
+@media (min-width: 769px) {
+  html.aboutpage-fullscreen,
+  html.aboutpage-fullscreen body {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+  }
+
+  html.aboutpage-fullscreen #__docusaurus,
+  html.aboutpage-fullscreen #__docusaurus > div {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
 }
 
 /* 侧边栏与 HideOnScroll 导航栏联动遮罩效果 (与 Docusaurus 官方实现一致) */
@@ -126,7 +252,7 @@
   display: flex !important;
 }
 
-/* 通告栏斜向淡蓝色条纹背景样式 */
+/* 通告栏斜向淡蓝色条纹背景样式与移动端居中适配 */
 .theme-announcement-bar {
   --site-announcement-bar-stripe-color1: #e0f2fe;
   --site-announcement-bar-stripe-color2: #bae6fd;
@@ -141,6 +267,32 @@
   font-weight: 600;
   color: #0369a1 !important;
   border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 36px !important;
+}
+
+.theme-announcement-bar div[class*='announcementBarContent'],
+.theme-announcement-bar [class*='content'] {
+  width: 100% !important;
+  text-align: center !important;
+  padding: 0 2.2rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+.theme-announcement-bar button,
+.theme-announcement-bar [class*='closeButton'],
+.theme-announcement-bar [class*='close'] {
+  position: absolute !important;
+  right: 0.5rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
 }
 
 [data-theme='dark'] .theme-announcement-bar {
@@ -201,16 +353,7 @@
   opacity: 0.85;
 }
 
-/* 页脚 (Footer) 间距压缩与对称化 */
-.footer {
-  padding: 1.5rem 0 !important;
-}
-
-@media (max-width: 640px) {
-  .footer {
-    padding: 0.75rem 0 1rem !important;
-  }
-}
+/* (已移除冲突的 footer padding 规则，footer 高度由上方 20px 规则统一控制) */
 
 @media (min-width: 997px) {
   .navbar__items,
@@ -346,7 +489,7 @@ body:has([class*='heroBanner']) .navbar--hidden {
 }
 
 /* 全站 a 标签 紧贴文本字宽的荧光涂抹视效（根据文字内容自适应宽度） */
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']) {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):not([class*='footer']) {
   text-decoration: none !important;
   display: inline-block !important;
   width: fit-content !important;
@@ -357,13 +500,13 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   transition: background-color 0.18s ease-in-out, color 0.18s ease-in-out !important;
 }
 
-a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):hover {
+a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):not([class*='footer']):hover {
   text-decoration: none !important;
   background-color: rgba(2, 132, 199, 0.14) !important;
   color: #0284c7 !important;
 }
 
-[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):hover {
+[data-theme='dark'] a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([class*='pagination-nav']):not([class*='menu']):not([class*='sidebar']):not([class*='noticeLink']):not([class*='action']):not([class*='about']):not([class*='identity']):not([class*='footer']):hover {
   background-color: rgba(56, 189, 248, 0.22) !important;
   color: #38bdf8 !important;
 }
@@ -540,6 +683,41 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   [data-theme='dark'] .navbar__search-input {
     background-color: rgba(255, 255, 255, 0.08) !important;
   }
+}
+
+/* ==========================================================
+ * 全站精细化微型滚动条美化
+ * ========================================================== */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 99px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.5);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.8);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
 }
 
 

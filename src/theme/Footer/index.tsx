@@ -4,9 +4,12 @@ import Footer from '@theme-original/Footer';
 
 export default function FooterWrapper(props: Record<string, unknown>): React.JSX.Element | null {
   const { pathname } = useLocation();
-  const isHomepage = pathname === '/' || pathname === '/en' || pathname === '/en/';
+  const showFooter =
+    pathname === '/' ||
+    pathname === '/about' ||
+    pathname === '/about/';
 
-  if (!isHomepage) {
+  if (!showFooter) {
     return null;
   }
 

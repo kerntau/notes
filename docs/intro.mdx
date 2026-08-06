@@ -1,28 +1,84 @@
 ---
 sidebar_position: 1
+title: 简介
+description: 湖北师范大学专升本计算机科学与技术专业课《高级语言程序设计》（《C程序设计》）考试科目简介
+displayed_sidebar: notesSidebar
 ---
 
-# 教程简介
+# 《C程序设计》科目简介
 
-让我们在 **5 分钟内了解 Docusaurus**。
+湖北师范大学专升本计算机科学与技术专业的专业课考试科目为 **《高级语言程序设计》**（在备考和实际招考中通常简称为 **《C程序设计》**）。作为该专业选拔的**唯一专业课**，它不仅是测试考生工科逻辑基础和程序设计能力的核心科目，更是在专升本总分屏障中拉开分差、决定录取的“分水岭”。
 
-## 快速上手
+---
 
-通过**创建一个新站点**开始使用。
+## 1. 考试形式与基本信息
 
-或者直接在 **[docusaurus.new](https://docusaurus.new)** 上**在线体验 Docusaurus**。
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+  <div style={{ padding: '1rem 1.25rem', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: 'var(--ifm-color-emphasis-100)' }}>
+    <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-content-secondary)', fontWeight: 'bold' }}>考试形式</div>
+    <div style={{ fontSize: '1.15rem', fontWeight: '800', marginTop: '0.25rem' }}>闭卷 · 笔试</div>
+  </div>
+  <div style={{ padding: '1rem 1.25rem', borderRadius: '8px', border: '1px solid #bae6fd', backgroundColor: 'rgba(2, 132, 199, 0.06)' }}>
+    <div style={{ fontSize: '0.85rem', color: '#0369a1', fontWeight: 'bold' }}>试卷分值</div>
+    <div style={{ fontSize: '1.15rem', fontWeight: '800', marginTop: '0.25rem', color: '#0369a1' }}>总分 150 分</div>
+  </div>
+  <div style={{ padding: '1rem 1.25rem', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: 'var(--ifm-color-emphasis-100)' }}>
+    <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-content-secondary)', fontWeight: 'bold' }}>考试时长</div>
+    <div style={{ fontSize: '1.05rem', fontWeight: '700', marginTop: '0.25rem' }}>以招考大纲为准</div>
+  </div>
+  <div style={{ padding: '1rem 1.25rem', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: 'var(--ifm-color-emphasis-100)' }}>
+    <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-content-secondary)', fontWeight: 'bold' }}>指定教材</div>
+    <div style={{ fontSize: '0.95rem', fontWeight: '700', marginTop: '0.25rem' }}>《C程序设计（第五版）》</div>
+  </div>
+</div>
 
-### 环境准备
+- **指定教材详情**：谭浩强主编 **《C程序设计（第五版）》**（清华大学出版社，ISBN: `978-7-302-48144-7`）。
 
-- [Node.js](https://nodejs.org/zh-cn/download/) 20.0 及以上版本。
+---
 
-## 本地启动
+## 2. 核心考核范围与要求
 
-运行开发服务器：
+该科目主要考核学生对 C 语言基本语法、语义及各种数据类型使用特点的理解。要求考生不仅要掌握基础理论，更要在实践上具备扎实的 **算法设计、程序调试和手写代码的能力**。
 
-```bash
-pnpm start
-```
+### 基础与控制结构
+- **语法规范**：标识符命名规则、常见数据类型存储长度、运算符优先级与结合性。
+- **流程控制**：`if` 嵌套、`switch-case` 多分支及 `while`、`for` 循环结构的嵌套与跳转控制。
 
-该命令会在本地构建网站并启动开发服务器，在浏览器打开 http://localhost:3000/ 即可实时预览。
+### 批量数据与内存管理
+- **数组机制**：一维、二维数组的定义、内存布局与初始化。
+- **指针核心**：指针变量的应用、指针与数组/函数的结合（尤其是通过指针修改实参的机制）。
+
+### 模块化与自定义类型
+- **函数调用**：形参与实参传递、变量作用域与生存期（如 `static` 静态局部变量在函数调用中的值保留特性）。
+- **复合结构**：`struct` 结构体定义、**单链表**的创建、遍历与节点插入删除操作。
+
+<div style={{ padding: '1rem 1.25rem', borderRadius: '8px', borderLeft: '4px solid #059669', backgroundColor: 'rgba(16, 185, 129, 0.08)', overflow: 'hidden', margin: '1.5rem 0' }}>
+  <strong style={{ color: '#047857', display: 'block', marginBottom: '0.5rem' }}>经典算法要求（需熟练纸笔手写默写）</strong>
+  <ol style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.92rem', lineHeight: '1.6' }}>
+    <li><strong>冒泡排序</strong> 与 <strong>选择排序</strong></li>
+    <li><strong>二分查找</strong>（折半查找）</li>
+    <li><strong>试除法判定素数</strong></li>
+    <li><strong>辗转相除法</strong> 与 <strong>进制转换</strong></li>
+  </ol>
+</div>
+
+---
+
+## 3. 试题题型特征
+
+<div style={{ padding: '1rem 1.25rem', borderRadius: '8px', borderLeft: '4px solid #0284c7', backgroundColor: 'rgba(2, 132, 199, 0.08)', overflow: 'hidden', marginBottom: '1.5rem' }}>
+  <strong style={{ color: '#0369a1', display: 'block', marginBottom: '0.3rem' }}>官方政策规定</strong>
+  <span style={{ fontSize: '0.92rem', lineHeight: '1.6' }}>根据湖北省教育厅政策，专升本专业课考试中 <strong>不得设置选择题和判断题</strong>。</span>
+</div>
+
+湖北师范大学《C程序设计》真题呈现高度标准化的 **非客观题** 结构，主要包含以下四大模块：
+
+1. **程序填空**
+   - 考查对算法关键步骤和常用库函数（如 `strlen`, `strcmp`, `strcpy` 等）的精确补全。
+2. **程序改错**
+   - 考查语法细节、格式占位符（例如 `scanf` 中漏写取地址符 `&`，或 `double` 类型错用 `%f` 代替 `%lf` 接收输入）与逻辑漏洞的纠错能力。
+3. **程序结果计算**
+   - 通过追踪循环、静态变量、递归或指针地址计算，推导程序最终的输出结果。
+4. **程序题（算法设计）**
+   - 要求在**没有 IDE 辅助**的纸笔作答环境下，手写出逻辑完整、规范（必须包含头文件）且具备鲁棒性的完整 C 语言代码。
 

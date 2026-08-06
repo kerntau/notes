@@ -31,16 +31,21 @@ const config: Config = {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
+  // Set default language to Chinese (zh-Hans)
+  i18n: {
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans'],
+  },
+
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://notes.curn.me',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'kerntau',
+  projectName: 'notes',
 
   onBrokenLinks: 'throw',
 
@@ -53,7 +58,7 @@ const config: Config = {
         highlightSearchTermsOnTargetPage: true,
         explicitSearchResultPath: true,
         docsRouteBasePath: '/docs',
-        blogRouteBasePath: '/blog',
+        indexBlog: false,
       },
     ],
   ],
@@ -68,18 +73,7 @@ const config: Config = {
           editUrl:
             'https://github.com/kerntau/notes/tree/main/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl:
-            'https://github.com/kerntau/notes/tree/main/',
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -116,16 +110,21 @@ const config: Config = {
           to: '/docs/intro',
           label: '笔记',
           position: 'left',
-          activeBaseRegex: '/docs/',
+          activeBaseRegex: '^/docs/(?!exam)',
         },
-        {to: '/blog', label: '教程', position: 'left'},
+        {
+          to: '/docs/exam/2025',
+          label: '试题',
+          position: 'left',
+          activeBaseRegex: '^/docs/exam/',
+        },
         {to: '/about', label: '关于', position: 'left'},
       ],
     },
     footer: {
       style: 'light',
       links: [],
-      copyright: `<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 16px; font-size: 0.82rem; line-height: 1.4;"><span>Copyright © ${new Date().getFullYear()} <span class="footer-site-title">序记</span>. 基于 Docusaurus 构建.</span><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; color: inherit; text-decoration: none;"><img src="/img/icp-beian.webp" alt="ICP备案" style="width: 14px; height: 14px; object-fit: contain; vertical-align: -2px;" /><span>鄂ICP备2025157857号</span></a><a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; color: inherit; text-decoration: none;"><img src="/img/gongan-beian.png" alt="公安备案" style="width: 14px; height: 14px; object-fit: contain; vertical-align: -2px;" /><span>鄂公网安备 42018502008592号</span></a></div>`,
+      copyright: `<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; font-size: 0.8rem; line-height: 1;"><span>Copyright © ${new Date().getFullYear()} <span class="footer-site-title">序记</span></span><a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/docusaurus-keytar.svg" alt="Docusaurus" /><span>基于 Docusaurus 构建</span></a><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/icp-beian.webp" alt="ICP备案" /><span>鄂ICP备2025157857号</span></a><a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/gongan-beian.png" alt="公安备案" /><span>鄂公网安备 42018502008592号</span></a></div>`,
     },
     prism: {
       theme: prismThemes.github,
