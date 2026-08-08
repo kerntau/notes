@@ -10,7 +10,9 @@ function CompactUnit({ value, label }: { value: number | string; label: string }
   const formatted = String(value).padStart(label === '天' ? 1 : 2, '0');
   return (
     <div className={styles.compactUnit}>
-      <div className={styles.compactNumber}>{formatted}</div>
+      <div className={styles.compactNumber} key={formatted}>
+        {formatted}
+      </div>
       <span className={styles.compactLabel}>{label}</span>
     </div>
   );
@@ -56,7 +58,7 @@ function HomepageHeader() {
         {/* 倒计时模块 */}
         <div className={styles.countdownWrapper}>
           <div className={styles.countdownTitle}>
-            距离 2027年湖北省专升本考试（4月17日）还有
+            2027年湖北省专升本考试（4月17日）还有
           </div>
           {timeLeft.isOver ? (
             <div className={styles.overNotice}>
@@ -65,11 +67,11 @@ function HomepageHeader() {
           ) : (
             <div className={styles.compactContainer}>
               <CompactUnit value={timeLeft.days} label="天" />
-              <span className={styles.colon}>:</span>
+              <div className={styles.colon}>:</div>
               <CompactUnit value={timeLeft.hours} label="时" />
-              <span className={styles.colon}>:</span>
+              <div className={styles.colon}>:</div>
               <CompactUnit value={timeLeft.minutes} label="分" />
-              <span className={styles.colon}>:</span>
+              <div className={styles.colon}>:</div>
               <CompactUnit value={timeLeft.seconds} label="秒" />
             </div>
           )}

@@ -35,12 +35,12 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #f8fafc 0%, #edf4fc 100%);
+  background: radial-gradient(circle at 50% 38%, #ffffff 0%, #f4f8fd 60%, #eaf2fb 100%);
   box-sizing: border-box;
 }
 
 :global([data-theme='dark']) .heroBanner {
-  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  background: radial-gradient(circle at 50% 38%, #1e293b 0%, #0f172a 85%);
 }
 
 .heroSubtitle {
@@ -59,22 +59,43 @@
 }
 
 .countdownTitle {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2.35rem;
+  font-weight: 800;
   color: #0369a1;
-  margin-bottom: 2.2rem;
-  letter-spacing: 0.5px;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
 }
 
 :global([data-theme='dark']) .countdownTitle {
   color: #38bdf8;
 }
 
+/* 极简高级感倒计时 */
+@keyframes numberSubtleFade {
+  0% {
+    opacity: 0.65;
+    transform: translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes colonSmoothPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 .compactContainer {
   display: flex;
-  gap: 2.2rem;
+  gap: 3.5rem;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .compactUnit {
@@ -82,22 +103,28 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 180px;
+  min-width: 120px;
 }
 
 .compactNumber {
   position: relative;
-  font-size: 6rem;
+  font-size: 5.5rem;
   font-weight: 800;
   line-height: 1;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  height: 5.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-variant-numeric: tabular-nums;
   color: #0f172a;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   padding: 0;
   width: 100%;
   text-align: center;
   white-space: nowrap;
+  animation: numberSubtleFade 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  user-select: none;
 }
 
 :global([data-theme='dark']) .compactNumber {
@@ -105,23 +132,30 @@
 }
 
 .compactLabel {
-  margin-top: 14px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #475569;
-  letter-spacing: 1px;
+  margin-top: 18px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 2px;
 }
 
 :global([data-theme='dark']) .compactLabel {
-  color: #cbd5e1;
+  color: #94a3b8;
 }
 
 .colon {
-  font-size: 4.2rem;
-  font-weight: 800;
+  font-size: 3.8rem;
+  font-weight: 700;
   line-height: 1;
+  height: 5.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #0284c7;
-  transform: translateY(-28px);
+  transform: translateY(-8px);
+  animation: colonSmoothPulse 1.2s ease-in-out infinite;
+  user-select: none;
 }
 
 :global([data-theme='dark']) .colon {
@@ -212,42 +246,46 @@
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
-    padding: 0.75rem 0.75rem;
+    padding: 1.25rem 0.85rem;
   }
 
   .countdownTitle {
-    font-size: clamp(1.02rem, 3.8vw, 1.2rem);
+    font-size: clamp(0.98rem, 3.8vw, 1.25rem);
     line-height: 1.45;
-    margin-bottom: 1.1rem;
+    margin-bottom: 1.2rem;
     font-weight: 700;
+    white-space: normal;
+    text-align: center;
   }
 
   .compactContainer {
-    gap: clamp(0.35rem, 1.8vw, 0.75rem);
+    gap: clamp(0.7rem, 3.8vw, 1.4rem);
+    justify-content: center;
+    align-items: flex-start;
   }
 
   .compactUnit {
-    width: auto !important;
+    min-width: auto !important;
   }
 
   .compactNumber {
-    font-size: clamp(2.1rem, 7vw, 2.8rem);
-    padding: 0 0.1rem;
-    min-width: 24px;
-    width: auto !important;
+    font-size: clamp(1.6rem, 5.8vw, 2.2rem);
+    height: clamp(1.6rem, 5.8vw, 2.2rem);
     letter-spacing: -0.5px;
     font-weight: 800;
   }
 
   .colon {
-    font-size: clamp(1.4rem, 4.8vw, 2.0rem);
-    transform: translateY(-6px);
+    font-size: clamp(1.1rem, 4.2vw, 1.5rem);
+    height: clamp(1.6rem, 5.8vw, 2.2rem);
+    transform: translateY(-2px);
   }
 
   .compactLabel {
-    margin-top: 5px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
   }
 
   .buttonsContainer {
@@ -258,7 +296,7 @@
     gap: 0.85rem !important;
     width: fit-content !important;
     max-width: 100% !important;
-    margin-top: 1.35rem !important;
+    margin-top: 1.5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
@@ -266,11 +304,11 @@
   .btnPrimary,
   .btnSecondary {
     flex: initial !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    max-height: 42px !important;
-    padding: 0 1.5rem !important;
-    font-size: 0.98rem !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0 1.4rem !important;
+    font-size: 0.95rem !important;
     border-radius: 10px !important;
     box-sizing: border-box !important;
   }

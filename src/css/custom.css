@@ -1,4 +1,5 @@
 @import url('https://cn-font.claude-code-best.win/packages/xuandongkaishu/dist/XuandongKaishu/result.css');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&display=swap');
 
 /**
  * Any CSS included here will be global. The classic template
@@ -66,12 +67,12 @@
   background-color: transparent !important;
 }
 
-/* 超薄单行微型脚标 (固定 36px 高度) */
+/* 桌面端单行微型脚标 */
 .footer {
   background-color: #f8fafc !important;
   border-top: 1px solid #e2e8f0;
   color: #64748b;
-  padding: 0 !important;
+  padding: 0 12px !important;
   min-height: 36px !important;
   max-height: 36px !important;
   height: 36px !important;
@@ -82,10 +83,38 @@
   overflow: hidden !important;
 }
 
+.footer-container-inner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  width: 100%;
+}
+
+.footer-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+  font-size: 0.73rem;
+  line-height: 1.2;
+}
+
+.footer-row > * {
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-beian-row {
+  white-space: nowrap;
+}
+
 .footer * {
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1 !important;
 }
 
 .footer__bottom,
@@ -101,12 +130,11 @@
 .footer__copyright {
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1 !important;
-  font-size: 0.72rem !important;
+  font-size: 0.73rem !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  white-space: nowrap !important;
+  width: 100% !important;
 }
 
 .footer a,
@@ -114,15 +142,14 @@
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
+  gap: 4px !important;
   color: #475569 !important;
   text-decoration: none !important;
   padding: 0 !important;
   margin: 0 !important;
   background: transparent !important;
   background-color: transparent !important;
-  line-height: 1 !important;
-  vertical-align: middle !important;
+  line-height: 1.2 !important;
 }
 
 .footer a:hover,
@@ -134,13 +161,13 @@
 
 .footer a img,
 .footer-link img {
-  width: 15px !important;
-  height: 15px !important;
-  min-width: 15px !important;
-  min-height: 15px !important;
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
   object-fit: contain !important;
   display: inline-block !important;
-  vertical-align: middle !important;
+  vertical-align: sub !important;
   margin: 0 !important;
   padding: 0 !important;
   flex-shrink: 0 !important;
@@ -171,6 +198,11 @@
     min-height: 36px !important;
     max-height: none !important;
     padding: 6px 12px !important;
+  }
+
+  .footer-container-inner {
+    flex-direction: column !important;
+    gap: 5px !important;
   }
 
   .footer__copyright {

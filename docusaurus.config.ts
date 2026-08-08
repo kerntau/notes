@@ -124,7 +124,7 @@ const config: Config = {
     footer: {
       style: 'light',
       links: [],
-      copyright: `<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; font-size: 0.8rem; line-height: 1;"><span>Copyright © ${new Date().getFullYear()} <span class="footer-site-title">序记</span></span><a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/docusaurus-keytar.svg" alt="Docusaurus" /><span>基于 Docusaurus 构建</span></a><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/icp-beian.webp" alt="ICP备案" /><span>鄂ICP备2025157857号</span></a><a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/gongan-beian.png" alt="公安备案" /><span>鄂公网安备 42018502008592号</span></a></div>`,
+      copyright: `<div class="footer-container-inner"><div class="footer-row"><span><span class="footer-site-title">序记</span></span><a href="https://docusaurus.io/" target="_blank" rel="noopener noreferrer" class="footer-link" title="Docusaurus"><span>基于</span><img src="/img/docusaurus-keytar.svg" alt="Docusaurus" /><span>构建</span></a></div><div class="footer-row footer-beian-row"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/icp-beian.webp" alt="ICP备案" /><span>鄂ICP备2025157857号</span></a><a href="https://beian.mps.gov.cn/#/query/webSearch" target="_blank" rel="noopener noreferrer" class="footer-link"><img src="/img/gongan-beian.png" alt="公安备案" /><span>鄂公网安备 42018502008592号</span></a></div></div>`,
     },
     prism: {
       theme: prismThemes.github,
