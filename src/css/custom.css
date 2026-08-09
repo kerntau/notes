@@ -605,8 +605,33 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
 }
 
 /* ---------------------------------------------------- */
-/* 导航栏搜索框与移动端搜索按钮美化 */
+/* 导航栏右侧组件重新排序：[搜索框] -> [Git 版本] -> [主题切换] */
 /* ---------------------------------------------------- */
+
+@media (min-width: 997px) {
+  .navbar__items--right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .navbarSearchContainer,
+  .navbar__search {
+    order: 1 !important;
+    margin-right: 0.25rem !important;
+  }
+
+  .navbar__items--right > a,
+  .navbar__items--right > div,
+  .navbar__items--right > button:not([class*='colorModeToggle']) {
+    order: 2 !important;
+  }
+
+  .navbar__items--right [class*='colorModeToggle'],
+  .navbar__items--right button[class*='toggle'] {
+    order: 3 !important;
+  }
+}
 
 .navbarSearchContainer {
   display: flex !important;

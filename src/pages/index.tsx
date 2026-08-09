@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+import GitVersionNavbarItem from '../components/GitVersionNavbarItem';
 
 import styles from './index.module.css';
 
@@ -55,6 +56,11 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        {/* 移动端专属 Git 版本标识区域 */}
+        <div className={styles.mobileGitVersionWrapper}>
+          <GitVersionNavbarItem />
+        </div>
+
         {/* 倒计时模块 */}
         <div className={styles.countdownWrapper}>
           <div className={styles.countdownTitle}>

@@ -49,23 +49,60 @@ if (!fs.existsSync(dataDir)) {
 }
 
 let gitCommit = 'latest';
-let gitMsg = '';
-let appVersion = 'v1.0.0';
+let gitMsg = '最新提交笔记';
+let gitAuthor = 'kerntau';
+let gitDate = new Date().toISOString().split('T')[0];
+let appVersion = 'latest';
 
 try {
   const cp = require('child_process');
   const rootDir = path.join(__dirname, '..');
-  gitCommit = cp.execSync('git rev-parse --short HEAD', { cwd: rootDir }).toString().trim();
-  gitMsg = cp.execSync('git log -1 --pretty=%s', { cwd: rootDir }).toString().trim();
-  
-  try {
-    const rawTag = cp.execSync('git describe --tags --always', { cwd: rootDir }).toString().trim();
-    appVersion = rawTag.startsWith('v') ? rawTag : `v${rawTag}`;
-  } catch (err) {
-    const pkg = require('../package.json');
-    appVersion = `v${pkg.version || '1.0.0'}`;
+
+  // 1. 识别 CI/CD 部署环境变量（Vercel, GitHub Actions, Cloudflare Pages 等）
+  const envSha = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || process.env.CF_PAGES_COMMIT_SHA;
+  const envMsg = process.env.VERCEL_GIT_COMMIT_MESSAGE;
+  const envAuthor = process.env.VERCEL_GIT_COMMIT_AUTHOR_LOGIN || process.env.GITHUB_ACTOR;
+
+  if (envSha) {
+    gitCommit = envSha.substring(0, 7);
+  } else {
+    try {
+      gitCommit = cp.execSync('git rev-parse --short HEAD', { cwd: rootDir }).toString().trim();
+    } catch (e) {}
   }
-} catch (e) {}
+
+  if (envMsg) {
+    gitMsg = envMsg.split('\n')[0].trim();
+  } else {
+    try {
+      gitMsg = cp.execSync('git log -1 --pretty=%s', { cwd: rootDir }).toString().trim();
+    } catch (e) {}
+  }
+
+  if (envAuthor) {
+    gitAuthor = envAuthor;
+  } else {
+    try {
+      gitAuthor = cp.execSync('git log -1 --pretty=%an', { cwd: rootDir }).toString().trim();
+    } catch (e) {}
+  }
+
+  try {
+    gitDate = cp.execSync('git log -1 --pretty=%cd --date=format:"%Y-%m-%d %H:%M"', { cwd: rootDir }).toString().trim();
+  } catch (e) {
+    gitDate = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  }
+
+  // 2. 版本号获取逻辑：精确匹配 Tag，若无 Tag 则显示短 Commit Hash
+  try {
+    const exactTag = cp.execSync('git describe --tags --exact-match', { cwd: rootDir, stdio: ['pipe', 'pipe', 'ignore'] }).toString().trim();
+    appVersion = exactTag.startsWith('v') ? exactTag : `v${exactTag}`;
+  } catch (err) {
+    appVersion = gitCommit;
+  }
+} catch (e) {
+  console.warn('Git info fallback notice:', e.message);
+}
 
 const statsData = {
   docsCount: docsFiles.length,
@@ -77,6 +114,8 @@ const statsData = {
   updatedAt: new Date().toISOString().split('T')[0],
   gitCommit,
   gitMsg,
+  gitAuthor,
+  gitDate,
   appVersion
 };
 

@@ -6,7 +6,9 @@
   "totalEng": 14726,
   "totalWords": 40273,
   "updatedAt": "2026-08-09",
-  "gitCommit": "74f321f",
+  "gitCommit": "d376bce",
   "gitMsg": "feat(docs): 整合 C 语言全量 MDX 笔记与导航栏动态 Git 悬浮信息",
-  "appVersion": "v74f321f"
+  "gitAuthor": "kerntau",
+  "gitDate": "2026-08-09 21:31",
+  "appVersion": "d376bce"
 }
