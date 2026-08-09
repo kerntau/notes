@@ -1,0 +1,425 @@
+---
+sidebar_position: 2
+title: 多级指针与字符串
+description: 多级指针、指针与数组、指针运算、const 修饰指针
+displayed_sidebar: notesSidebar
+---
+
+# 多级指针与字符串
+
+## 多级指针
+
+多级指针不能跳跃定义。有一级，才能定义二级；有二级才能定义三级；有三级，才能定义四级……
+
+```c
+int a = 10;         // 普通变量
+int *p = &a;        // 一级指针。是变量的地址。
+int **pp = &p;      // 二级指针。是一级指针的地址。【重点】
+int ***ppp = &pp;   // 三级指针。是二级指针的地址。
+int ****pppp = &ppp;// 四级指针。是三级指针的地址。
+// ......
+*ppp   == pp == &p;
+**ppp  == *pp == p == &a;
+***ppp == **pp == *p == a;
+```
+
+## 指针和函数
+
+### 栈帧
+
+当函数被调用时，系统会在 stack 空间上申请一块内存，用来给函数调用提供空间，存储 **形参** 和 **局部变量**（定义在函数内部的变量）。
+
+函数调用结束时，这块内存空间会被自动释放（消失）。
+
+### 传值和传址
+
+#### 传值（值传递）
+
+函数调用期间，实参将自己的数据值，拷贝一份给形参。
+
+#### 传址（传引用）
+
+函数调用期间，实参将自己的“地址值”，拷贝一份赋值给形参。
+
+可以在 A 栈帧中，借助地址，修改 B 栈帧上的变量数据。
+
+### 数组做函数参数
+
+数组做函数参数时，传递的不再是整个数组，而是数组的首地址（指针）。
+
+当整型数组做函数参数时，通常在函数定义中，封装 2 个参数，一个表数组首地址，另一个表元素个数。
+
+```c
+int main(void)
+{
+    int arr[] = {1, 4, 6, 7, 9, 0};
+    printf("main : sizeof(arr) = %u\n", sizeof(arr));  // 整个数组的大小。
+    // 调用 test 函数，传参 数组。
+    test(arr);  // 实参！
+    system("pause");
+    return EXIT_SUCCESS;
+}
+// 定义函数，用数组做参数
+void test(int arr[])  // 形参
+{
+    printf("test : sizeof(arr) = %u\n", sizeof(arr));  // 指针的大小。
+    printf("arr[0] = %d\n", arr[0]);
+}
+```
+
+冒泡排序示例：
+
+```c
+// 冒泡排序
+// void BubbleSort(int arr[])  这种传参，无法在函数内，求元素个数。
+void BubbleSort(int arr[], int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+int main(void)
+{
+    int arr[] = {1, 4, 8, 12, 19, 43, 2, 7, 15};
+    // 获取元素个数
+    int n = sizeof(arr) / sizeof(arr[0]);
+    // 排序
+    BubbleSort(arr, n);
+    // 打印排序后结果
+    for (size_t i = 0; i < n; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    putchar('\n');
+    return 0;
+}
+```
+
+数组做函数参数，也可以写成指针的形式（本质一样）：
+
+```c
+void BubbleSort(int arr[], int n) == void BubbleSort(int *arr, int n)
+```
+
+### 指针做函数返回值
+
+指针做函数返回值，不能返回【局部变量的地址】。当函数调用结束，栈帧空间释放，局部变量的地址无效。
+
+数组做函数返回值，不允许！（C 语言中，只能写成指针形式）
+
+## 指针和字符串
+
+### 基本知识
+
+演示 demo1：
+
+```c
+char str1[] = {'h','i','\0'};  // 【麻烦】 变量，可读可写。
+char str2[] = "hi";            // 变量，可读可写。
+char *str3 = "hi";             // 常量，只读。
+char *str4 = {'h','i', '\0'};  // 错误！
+```
+
+`char *str2 = "hello"` 是一个常量，不允许修改。
+
+演示 demo2：同一个字符串常量，可以给多个不同的指针赋值。
+
+`char* str2 = "hello";` 和 `char* n = "hello";` 地址值都相同，都是字符串 “hello” 的地址。
+
+```c
+int main0401(void)
+{
+    char str1[] = "hello";  // 相当于 {'h','e','l','l','o','\0'}
+    char* str2 = "";
+    str1[0] = 'R';  // str1 是变量，可以随意修改。
+    printf("%s\n", str1);
+    str2[0] = 'R'; // "hello" 是字符串常量。不能修改！
+    printf("%s\n", str2);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+```c
+int main(void)
+{
+    char str1[] = "hello";  // 相当于 {'h','e','l','l','o','\0'}
+    char m[] = "hello";
+    char* str2 = "hello";
+    char* n = "hello";
+    printf("str1 = %p\n", str1);
+    printf("m    = %p\n", m);   // 数组定义的 hello 地址不同。
+    printf("str2 = %p\n", str2);
+    printf("n    = %p\n", n);   // 指针定义的 hello 是字符串常量，是同一个地址。
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+**【结论】**：当字符串（含有 `\0` 的字符数组）做函数参数时，不需要提供 2 个参数。因为每个字符串都有 `\0`。
+
+### 练习
+
+#### 字符串比较（strcmp() 函数）
+
+比较 str1 和 str2，如果相同返回 0；不同则依次比较 ASCII 码，str1 > str2 返回 1，否则返回 -1。
+
+按对应的位置，比较字符的大小，不比较 ASCII 码之和。对应位不同时，比较字符的 ASCII 码：str1 > str2 → 1，str1 < str2 → -1。
+
+分析：循环，依次比较两个字符串中对应位字符，`\0` 结束。都相同 → 0。
+
+```c
+// 数组的实现方式
+int myStrcmp(char *str1, char *str2)
+{
+    int i = 0;
+    while (str1[i] == str2[i])  // *(str1+i) == *(str2+i)
+    {
+        if (str1[i] == '\0')
+        {
+            return 0;       // 2 个字符串，一样！
+        }
+        i++;
+    }
+    // str1 和 str2 有字符不同。
+    return str1[i] > str2[i] ? 1 : -1;
+}
+```
+
+```c
+// 指针的实现方式
+int myStrcmp2(char* str1, char* str2)
+{
+    while (*str1 == *str2)  // *(str1+i) == *(str2+i)
+    {
+        if (*str1 == '\0')
+        {
+            return 0;       // 2 个字符串，一样！
+        }
+        str1++;
+        str2++;
+    }
+    // str1 和 str2 有字符不同。
+    return *str1 > *str2 ? 1 : -1;
+}
+```
+
+#### 字符串拷贝（strcpy 函数）
+
+将一个字符串中的所有字符，依次拷贝存放到另一个空字符数组中。
+
+```c
+// 数组版：
+void myStrcpy(char* src, char* dst)
+{
+    int i = 0;
+    while (src[i] != '\0')  // while(src[i] != 0)  while(src[i])
+    {
+        dst[i] = src[i];
+        i++;
+    }
+    dst[i] = '\0';   // main 中的 dst 初始化为 0，此步可以省略。
+}
+```
+
+```c
+// 指针版：
+void myStrcpy2(char* src, char* dst)
+{
+    while (*src != '\0')  // while(src[i] != 0)  while(*src)
+    {
+        *dst = *src;
+        src++;
+        dst++;
+    }
+    *dst = '\0';   // main 中的 dst 初始化为 0，此步可以省略。
+}
+```
+
+#### 在字符串中查找字符出现的位置（strchr 函数）
+
+```text
+“helloworld”  ‘e’ ——> “elloworld”
+              ‘l’ ——> “lloworld”
+              ‘r’ ——> “rld”
+```
+
+```c
+// 指针版
+char* myStrchr(char* str, char ch)
+{
+    while (*str)    // while (*str != '\0')  == while (*str != 0)
+    {
+        if (*str == ch)
+        {
+            return str;
+        }
+        str++;
+    }
+    return NULL;  // 在 str 中，没有找到 ch
+}
+```
+
+```c
+// 数组版
+char* myStrchr2(char* str, char ch)
+{
+    int i = 0;
+    while (str[i])  // while (str[i] != '\0') == while (str[i] != 0)
+    {
+        if (str[i] == ch)       // str[i] == *(str+i)
+        {
+            return &str[i];
+        }
+        i++;
+    }
+    return NULL;  // 在 str 中，没有找到 ch
+}
+```
+
+#### 字符串去空格
+
+```text
+“ni chou sha ? chou ni za di !”  ----> “nichousha?chounizadi!”
+```
+
+```c
+// 封装函数，去除字符串空格  --- 数组版
+void str_no_space(char* src, char* dst)
+{
+    int i = 0;      // 遍历 src 字符串
+    int j = 0;      // 记录 dst 存储位置。
+    while (src[i])
+    {
+        if (src[i] != ' ')  // 只有不为空格，才存储到 dst 中。
+        {
+            dst[j] = src[i];
+            j++;            // 不为空格，j 后移。为空格，j 不动。
+        }
+        i++;
+    }
+    dst[j] = '\0';
+}
+```
+
+```c
+// 封装函数，去除字符串空格  --- 指针版
+void str_no_space2(char* src, char* dst)
+{
+    while (*src)
+    {
+        if (*src != ' ')  // 只有不为空格，才存储到 dst 中。
+        {
+            *dst = *src;
+            dst++;      // 不为空格，指针后移。为空格，指针不动。
+        }
+        src++;
+    }
+    *dst = '\0';
+}
+int main(void)
+{
+    char str[] = "ni chou sha ? chou ni za di ! zai chou yi ge shi shi";
+    char dst[1024] = {0};
+    // 调用函数 去除 str 中的空格，保存到 dst 中
+    // str_no_space(str, dst);
+    str_no_space2(str, dst);
+    printf("dst = %s\n", dst);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 带参数的 main 函数
+
+无参版：
+
+```c
+int main(void) { return 0; }
+```
+
+有参版：
+
+```c
+int main(int argc, char *argv[]) { return 0; }
+// 参1：表示给 main 函数传递的参数的总个数。
+// 参2：是一个数组。数组的每一个元素都是 字符串 (char *)
+```
+
+测试代码：
+
+```c
+int main(int argc, char *argv[])
+{
+    int i = 0;
+    for (i = 0; i < argc; i++)
+    {
+        printf("argv[%d] = %s\n", i, argv[i]);
+    }
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### 测试方法
+
+1. 在终端中，使用 gcc 编译得到可执行文件，如 test.exe。
+2. 不能获取带有空格的字符串！！！空格是分隔符。
+
+```text
+gcc 09-带参数的main.c -o test.exe
+test.exe aa bb cc dd ee
+test.exe hello world haha xixi hoho heihei 。。。。
+
+argc: --- 6
+argv[0] = test.exe
+argv[1] = aa
+argv[2] = bb
+argv[3] = cc
+argv[4] = dd
+argv[5] = ee
+```
+
+> 补充：在 VS 中，项目名称上右键 —— 属性 —— 配置属性 —— 调试 —— 命令行参数 —— 写入待测试的命令行参数。
+
+## 字符串练习
+
+### str 中 substr 出现的次数
+
+```text
+str   : “hellollollollollollo ”
+substr: “llo”
+```
+
+写函数测试，`llo` 在 “hellollollollollollo ” 出现了多少次。
+
+学习、使用 `strstr()` 函数，再实现上述题目。
+
+### 求字符串非空格元素个数
+
+统计 `"ni chou sha ? chou ni za di ! zai chou yi ge shi shi"` 中，除空格外字符的个数。
+
+### 字符串逆置
+
+```text
+“hello” ---> “olleh”
+“word”  ---> “drow”
+```
+
+### 判断字符串是回文
+
+```text
+abcba        --- 是回文
+amkilolikma  --- 是回文
+abccba       --- 是回文
+abcdba       --- 不是回文
+```

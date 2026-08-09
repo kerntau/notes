@@ -80,7 +80,7 @@ function HomepageHeader() {
         {/* 行动按钮 */}
         <div className={styles.buttonsContainer}>
           <Link
-            to="/docs/intro"
+            to="/docs/c-lang/intro"
             className={clsx('button button--primary', styles.btnPrimary)}>
             开始学习
           </Link>

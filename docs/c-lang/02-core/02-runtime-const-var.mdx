@@ -1,0 +1,380 @@
+---
+sidebar_position: 1
+title: 运行过程、常量、变量与标识符
+description: main 函数种类、gcc 编译步骤、printf 格式化输出、变量与常量、标识符命名规范、整型
+displayed_sidebar: notesSidebar
+---
+
+# 运行过程、常量、变量与标识符
+
+## main 函数种类
+
+### main 函数标准类型
+
+无参：
+
+```c
+int main(void) { return 0; }
+```
+
+有参：
+
+```c
+int main(int argc, char *argv[]) { return 0; }
+```
+
+### main 函数其他类型
+
+下面这些写法都能正常运行，但是它们**不是** main 的标准语法格式：
+
+```c
+void main(int argc, char *argv[]);
+void main(void);
+int main();
+int main(void);
+main();
+main(int argc, char *argv[]);
+```
+
+## gcc 编译 4 步骤
+
+### 整体过程
+
+gcc 编译一共分为 4 个步骤：预处理、编译、汇编、连接。
+
+### 预处理
+
+- 参数：`-E`
+- 生成的文件：`xxx.i` 预处理文件
+- 使用命令：`gcc -E xxx.c -o xxx.i`
+- 工具：预处理器（包含在 gcc 编译集合工具中）
+
+完成的工作：
+
+1. **头文件展开**
+   - 展开 `stdio.h` 文件内容，和源码一起，放到 `xxx.i` 文件中。
+   - 不检查语法错误！可以在此阶段展开任意文件。
+   - 测试命令：`gcc -E hello.c -o hello.i -I(大 i) .(当前目录)`
+2. **宏定义替换**
+   - 将宏名，替换成宏值。
+   - `#define PI 3.14` 【解释】：`define`：创建宏；`PI`：宏名；`3.14`：宏值。
+3. **替换注释**
+   - 把单行、多行注释替换成空行。
+4. **展开条件编译**
+   - 根据条件来展开代码。
+
+测试案例（使用命令：`gcc -E hello.c -o hello.i`）：
+
+```c
+#include <stdio.h>
+// 定义宏
+#define PI 3.14
+int main(void)
+{
+    printf("hello world\n");
+
+    // 使用宏
+    printf("PI = %f\n", PI);
+
+    return 0;
+}
+```
+
+条件编译测试案例：
+
+```c
+// 测试案例
+#include <stdio.h>
+// 定义宏
+// #define PI 3.14  // PI 定义与否，直接决定了下面的 ----666 是否打印。
+int main(void)
+{
+    printf("hello world\n");
+
+    // 使用宏
+    //printf("PI = %f\n", PI);
+
+    // 使用条件编译, 含义是：如果定义了 PI ，那么就打印 -----666， 否则不打印。
+#ifdef PI
+    printf("-------------6666\n");
+#endif
+    return 0;
+}
+```
+
+### 编译
+
+- 参数：`-S`
+- 生成的文件：`xxx.s` 汇编文件
+- 使用命令：`gcc -S xxx.i -o xxx.s`
+- 工具：编译器（包含在 gcc 编译集合工具中）
+
+完成的工作：
+
+1. 逐行检查语法错误！【重点】—— 编译过程是整个 gcc 编译 4 步骤中最耗时的。
+2. 将 C 程序翻译成汇编指令，得到 `.s` 汇编文件。
+
+```asm
+    .file   "hello.c"
+    .text
+    .def    __main; .scl    2;  .type   32; .endef
+    .section .rdata,"dr"
+.LC0:
+    .ascii "hello world\0"
+.LC2:
+    .ascii "PI = %f\12\0"
+.LC3:
+    .ascii "-------------6666\0"
+    .text
+    .globl  main
+    .def    main;   .scl    2;  .type   32; .endef
+    .seh_proc   main
+main:
+    pushq   %rbp
+    .seh_pushreg    %rbp
+    movq    %rsp, %rbp
+    .seh_setframe   %rbp, 0
+    subq    $32, %rsp
+    .seh_stackalloc 32
+    .seh_endprologue
+    call    __main
+    leaq    .LC0(%rip), %rcx
+    call    puts
+    movq    .LC1(%rip), %rax
+    movq    %rax, %rdx
+    movq    %rdx, %xmm1
+    movq    %rax, %rdx
+    leaq    .LC2(%rip), %rcx
+    call    printf
+    leaq    .LC3(%rip), %rcx
+    call    puts
+    movl    $0, %eax
+    addq    $32, %rsp
+    popq    %rbp
+    ret
+    .seh_endproc
+    .section .rdata,"dr"
+    .align 8
+.LC1:
+    .long   1374389535
+    .long   1074339512
+    .ident  "GCC: (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0"
+    .def    puts;   .scl    2;  .type   32; .endef
+    .def    printf; .scl    2;  .type   32; .endef
+```
+
+### 汇编
+
+- 参数：`-c`
+- 生成的文件：`xxx.o` 目标文件（二进制，人类看不懂）
+- 使用命令：`gcc -c xxx.s -o xxx.o`
+- 工具：汇编器（包含在 gcc 编译集合工具中）
+
+完成的工作：
+
+- 翻译：将汇编指令翻译成对应的二进制指令。
+
+### 连接
+
+- 参数：无（`-o` 不是链接阶段参数，是用来指定文件名）
+- 生成的文件：`xxx.exe` 可执行文件（二进制，人类看不懂）
+- 使用命令：`gcc xxx.o -o xxx.exe`
+- 工具：链接器（包含在 gcc 编译集合工具中）
+
+完成的工作：
+
+- 库引入
+- 合并多目标文件
+- 合并启动例程
+
+### 小结
+
+gcc 编译的 4 个步骤中，每个步骤之间都可相互转换。
+
+## printf 格式化输出 int
+
+### 程序调试
+
+前提：程序没有语法错误。（语法错误 VS 帮我检查）
+
+作用：检查程序出现的**逻辑错误**！
+
+核心思想：让程序一行一行地执行。
+
+添加行号：工具 —— 选项 —— 文本编辑器 —— c/c++ —— 行号（勾选）。
+
+```c
+#include <stdio.h>
+#define PI 3.14
+int main(void)
+{
+    int a = 10;
+    printf("%d\n", a);      // %d：格式匹配符，匹配整数。
+    printf("a = %d\n", a);  // a =  在“”中，代表普通字符串， 原样输出。
+    printf("%d\n", 100);
+    printf("%f\n", PI);     // %f：格式匹配符，匹配小数。
+    printf("PI = %f\n", PI); // PI =  在“”中，代表普通字符串， 原样输出。
+    printf("%f\n", 3.45678); // %f：格式匹配符，匹配小数。
+
+    int b = 20;
+    printf("%d + %d = %d\n", a, b, a+b);  // +、= 在 “”中，代表普通字符串， 原样输出。
+    printf("%d + %d = %d\n", 3, 7, 3+7);
+    return 0;
+}
+```
+
+## 程序调试流程
+
+1. 添加断点（可以添加多个）。
+   1. 鼠标点击待添加断点行，左侧行号前灰色区域。再次点击取消。
+   2. 光标停止在待添加断点行的任意位置，按 F9 添加断点。再次按 F9 取消断点。
+2. 调试必须在 Debug 模式下进行。Release 模式无效。
+3. F5 启动调试。
+4. 断点停止的位置，是尚未执行的指令。
+5. 开始调试：
+   1. 逐语句执行。逐语句执行下一行（F11）：遇见函数，进入自定义函数内部，逐条跟踪执行。
+   2. 逐过程执行。逐过程执行下一行（F10）：遇见函数，不进入函数内部，逐条跟踪执行。
+   3. 逐断点执行。代码中有多断点，直接跳转到下一个断点。——点击“继续”，无快捷键。
+   4. 跳出函数。跳出当前断点所在的函数。Shift + F10
+
+## 变量
+
+### 变量 3 要素
+
+1. 变量名：用来在程序中使用。
+2. 变量类型：开辟内存空间大小。
+3. 变量值：存储的实际数据。
+
+### 变量定义
+
+定义语法：`类型名 变量名 = 变量值`（一般定义方法）。例如 `int m = 57;`
+
+会开辟内存空间给变量。变量声明不会开辟内存空间。
+
+### 变量声明
+
+语法：
+
+```c
+int a;          // 没有变量值的变量定义，叫做声明。
+extern int a;   // 添加 extern 关键字。
+```
+
+特性：
+
+- 变量要想使用，必须有定义。
+- 编译器在使用变量之前，必须要看到变量定义。如果没有看到，编译器会自动找寻一个变量声明，提升成定义。
+- 如果变量声明前添加了 `extern` 关键字，无法提升！
+
+## 常量
+
+不会变化、不能被修改的数据。
+
+1. `"hello"`、`'A'`、`57`、`-10`、`3.1415926`（浮点常量）
+2. `#define PI 3.14` ——【宏定义】语法：`#define 宏名 宏值`
+   - 强调：没有 `;` 结束标记。
+   - 强调：没有 `=`。
+3. `const int a = 10;` 定义语法：`const 类型名 变量名 = 变量值`
+   - `const` 关键字：被该关键字修饰的变量，表示为只读变量。
+
+练习：
+
+```c
+#define PI 3.1415926        // 定义常量
+int main(void)
+{
+    // 圆的面积 ：s = PI * r * r
+    // 圆的周长 ：L = 2 * PI * r
+    int r = 3;      // 变量的定义。
+    float s = PI * r * r;   // 表达式。作为变量值。
+    float l = 2 * PI * r;
+    //printf("圆的面积：%f\n", s);// 28.274334  默认显示 6 位小数。
+    //printf("圆的周长：%f\n", l);// 18.849556
+    //printf("圆的面积：%.2f\n", s);// 28.27
+    //printf("圆的周长：%.2f\n", l);// 18.85 指定保留小数点后两位，对第 3 位四舍五入
+    float m = 3.4567891;
+    printf("m=%6.2f\n", m);
+    //共显示 6 位数，包含小数点，保留小数点后两位，对第 3 位四舍五入，不足 6 位用空格补齐。
+    printf("m=%06.2f\n", m);
+    //共显示 6 位数，包含小数点，保留小数点后两位，对第 3 位四舍五入，不足 6 位用 0 补齐。
+    return 0;
+}
+```
+
+## 标识符
+
+变量和常量总称。
+
+### 硬性要求
+
+1. 标识符不能是关键字、函数名。如 `system`、`printf`、`int`、`main`、`return` ……
+2. 只能由字母、数字、下划线组成。`a-z / A-Z / 0-9 / _`
+   - 例如：`abc_1` / `abc_2` / `_abc_1` / `a_b_c_d`
+3. 不能以数字开头。
+
+   ```c
+   int a5ir = 10;    // ok
+   int _34F = 6;     // ok
+   float 98ti_54 = 5.4;  // error;
+   ```
+
+4. 大小写严格区分。
+   - 通常使用大写来定义常量。`#define MAX 100`
+   - 通常使用小写来定义变量。
+
+### 命名规范
+
+1. **大驼峰法**：`int HelloWorldHahaHohoHehe = 10;`
+   - 多个单词组成变量名，每个单词首字母大写。
+2. **小驼峰法**：`int helloWorldHahaHohoHehe = 10;`
+   - 多个单词组成变量名，首个单词的首字母小写，其余每个单词首字母大写。
+3. **小写 + 下划线**：`int hello_world_haha_hoho_hehe = 10;`
+   - C 语言专用！
+
+## 整型
+
+### sizeof 关键字
+
+- `sizeof` 不是函数。
+- 求取变量、数据类型占用的内存空间大小。
+- 使用方法：
+  1. `sizeof(变量名)` —— 返回变量大小，单位整数字节。
+  2. `sizeof(类型名)` —— 返回数据类型大小，单位整数字节。
+  3. `sizeof 变量名` —— C 语言支持该写法，不推荐使用。
+
+### 有符号整型
+
+| 整型名 | 名称 | 格式匹配符 | 占用的大小 | 最小值 | 最大值 |
+| --- | --- | --- | --- | --- | --- |
+| int | 整型 | %d | 4 字节 | -2147483648 | 2147483647 |
+| short | 短整型 | %hd | 2 字节 | -32768 | 32767 |
+| long | 长整型 | %ld | Windows：32/64 位：4 字节；Linux 下：32 位：4 字节、64 位：8 字节 | -2147483648 | 2147483647 |
+| long long | 长长整型 | %lld | 8 字节 | -9223372036854775808 | 9223372036854775807 |
+
+获取数据类型的最小值、最大值，可以使用 `#include <limits.h>`。
+
+```c
+#include <stdio.h>
+#include <limits.h>
+int main(void)
+{
+    printf("int大小 = %u\n", sizeof(int));
+    printf("int最小值：%d, 最大值：%d\n", INT_MIN, INT_MAX);
+    printf("short大小 = %u\n", sizeof(short));
+    printf("short最小值：%hd, 最大值：%hd\n", SHRT_MIN, SHRT_MAX);
+    printf("long大小 = %u\n", sizeof(long));
+    printf("long最小值：%ld, 最大值：%ld\n", LONG_MIN, LONG_MAX);
+    printf("long long大小 = %u\n", sizeof(long long));
+    printf("long long最小值：%lld, 最大值：%lld\n", LLONG_MIN, LLONG_MAX);
+    return 0;
+}
+```
+
+### 无符号整型
+
+| 整型名 | 名称 | 格式匹配符 | 占用的大小 | 最小值 | 最大值 |
+| --- | --- | --- | --- | --- | --- |
+| unsigned int | 无符号整型 | %u | 4 字节 | 0 | |
+| unsigned short | 无符号短整型 | %hu | 2 字节 | 0 | |
+| unsigned long | 无符号长整型 | %lu | Windows：32/64 位：4 字节；Linux 下：32 位：4 字节、64 位：8 字节 | 0 | |
+| unsigned long long | 无符号长长整型 | %llu | 8 字节 | 0 | |

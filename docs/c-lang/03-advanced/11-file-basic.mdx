@@ -1,0 +1,527 @@
+---
+sidebar_position: 5
+title: 文件操作基础
+description: 文件打开与关闭、文件读写函数、文件指针
+displayed_sidebar: notesSidebar
+---
+
+# 文件操作基础
+
+## 一、枚举
+
+语法：`enum 枚举名 { 枚举常量 };`
+
+枚举常量的规则：
+
+- 必须是整型常量，不允许是浮点数，可以是负值。
+- 默认值从 0 开始，后续常量较前一个 +1。
+- 可以给任意一个常量赋初值，后续常量仍较前一个 +1。
+
+示例：
+
+```c
+enum color {red, green, blue, black, pink, yellow};
+```
+
+```c
+enum color {red, green = -5, blue, black, pink = 18, yellow};
+```
+
+综合示例（可使用匿名枚举）：
+
+```c
+//enum color { red, green = -5, blue, black, pink = 18, yellow };
+enum { red, green = -5, blue, black, pink = 18, yellow };
+int main(void)
+{
+    int flg = 2;
+    if (flg == blue)
+    {
+        printf("blue is -4\n");
+    }
+    else
+    {
+        printf("bule is not %d, blue=%d\n", flg, blue);
+    }
+    printf("red = %d, yellow = %d\n", red, yellow);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 二、文件
+
+### 系统文件
+
+| 函数 | 设备 | 标准流 | 名称 | 文件描述符 |
+| --- | --- | --- | --- | --- |
+| scanf | 键盘 | 标准输入 | stdin | 0 |
+| printf | 屏幕 | 标准输出 | stdout | 1 |
+| perror | 屏幕 | 标准错误 | stderr | 2 |
+
+以上 3 个文件为系统文件。应用程序启动时，这 3 个文件被系统自动打开；程序执行结束，由系统自动关闭（隐式回收）。
+
+如果手动关闭系统文件，再使用对应函数会报错：
+
+```c
+fclose(stdout);   // 关闭文件。
+printf("hello world\n");  // 报错！！！
+```
+
+### 文件分类
+
+- **设备文件**（与硬件有直接关系）：屏幕、键盘、网卡、声卡、显卡、扬声器……
+- **磁盘文件**：
+  - 文本文件：文件内容为 ASCII 码。
+  - 二进制文件：文件内容为二进制编码数据。
+
+### 文件指针
+
+普通指针的初始化：
+
+```c
+int *p;   // 野指针。
+p = &a;   // 初始化方法1
+p = malloc();  // 初始化方法2
+```
+
+文件指针：
+
+```c
+FILE *fp;  // 野指针。
+```
+
+文件指针需要借助“文件操作函数”来改变 `fp` 为空、为野的情况。举例：`fopen()` 可将 `fp` 变为非野。
+
+操作文件可以使用的函数：`fputc`、`fgetc`、`fputs`、`fgets`、`fread`、`fwrite`……
+
+### 文件操作一般步骤
+
+1. 打开文件：`fopen()` ——> `FILE *fp;`
+2. 读写文件：`fputc`、`fgetc`、`fputs`、`fgets`、`fread`、`fwrite`……
+3. 关闭文件：`fclose()`
+
+## 三、文件操作
+
+### 打开、关闭文件
+
+**打开文件**：
+
+```c
+#include <stdio.h>
+FILE *fp;  // 野指针
+FILE * fopen(const char * filename, const char * mode);
+    参1：待打开的文件名（访问路径）
+    参2：文件打开权限。（初学，只掌握前3个）
+        r：只读方式打开文件，文件如果不存在，报错！存在，以只读方式打开。
+        w：只写方式打开文件，文件如果不存在，创建一个空文件。文件已经存在，清空并打开。
+        w+：读、写方式打开文件，文件如果不存在，创建一个空文件。文件已经存在，清空并打开。
+        r+：读、写方式打开文件，文件如果不存在，报错！存在，以读、写方式打开。
+        a：以追加方式打开文件。
+        b：操作二进制文件使用的。（Windows）
+    返回值：
+        成功：返回打开文件的文件指针(fp) 【强调】：这个fp指针，不使用“解引用”操作数据。
+        失败：NULL
+```
+
+**关闭文件**：
+
+```c
+#include <stdio.h>
+int fclose(FILE * stream);
+    参：打开的文件的fp（ fopen() 返回值 ）
+    返回值：
+        成功：0
+        失败：-1
+```
+
+示例：
+
+```c
+int main(void)
+{
+    FILE* fp;
+    // 打开文件
+    //fp = fopen("C:\itcast\test.txt", "r");    // 错误传参
+    //fp = fopen("C:\\itcast\\test.txt", "r");  // 正确传参
+    //fp = fopen("C:/itcast/test.txt", "r");    // 正确传参
+    //fp = fopen("C:/itcast/test2.txt", "r");   // 指定r打开，文件不存在，报错
+    fp = fopen("C:/itcast/test2.txt", "w"); // 指定w打开，文件不存在创建，存在清空
+    if (fp == NULL)
+    {
+        perror("fopen error");   // printf("fopen error\n");
+        return -1;
+    }
+    // 读写文件。。。
+
+    // 关闭
+    int ret = fclose(fp);
+    printf("ret = %d, ----------finish\n", ret);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### 绝对、相对路径
+
+**绝对路径**：从系统磁盘的盘符开始，找到待访问的文件的路径。Windows 下的两种书写方法：
+
+1. `C:\\Users\\afei\\Desktop\\TTTTTT\\01-复习.avi`
+2. `C:/Users/afei/Desktop/TTTTTT/01-复习.avi` —— 也适用于 Linux 系统。
+
+**相对路径**：
+
+1. 如果在 VS 环境下，使用 Ctrl+F5 编译执行，文件的相对路径是相对于 `day11.vcxproj` 所在目录位置，不是相对于 `.c` 文件。
+2. 如果双击 `.c` 文件同级目录下的 Debug 目录下的 `xxx.exe` 文件，文件的相对路径是相对于 `xxx.exe` 所在的目录位置。
+3. 如果 gcc 生成的 `xxx.exe` 文件运行，文件的相对路径是相对于 `xxx.exe` 所在的目录位置。
+
+## 四、按字符写文件 fputc
+
+```c
+int fputc(int ch, FILE * stream);  // 将指定一个字符，写入指定文件
+    参1：待写入的 字符
+    参2：打开的文件fp （fopen的返回值）
+    返回值：
+        成功：写入到文件中的那个字符的 ASCII
+        失败：-1
+```
+
+`fputc` 向文件中写字符时，文件读写指针（参照光标理解）会自动后移。
+
+**练习**：创建一个新文件，向该文件中写入 26 个大写英文字母。
+
+```c
+int main(void)
+{
+    char* filename = "03test.txt";  // 相对路径
+    int ret = 0;
+    char ch = 'A';
+    FILE* fp = fopen(filename, "w");  // 文件存在，会清空
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 循环写26个大写字符到 文件中。
+    while (ch <= 'Z')
+    {
+        ret = fputc(ch, fp);
+        ch++;
+    }
+
+    ret = fclose(fp);
+    printf("ret = %d, ----------finish\n", ret);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 五、按字符读文件 fgetc
+
+```c
+int fgetc(FILE * stream);   // 从指定文件中，读取一个字符。
+    参：待读取的文件fp(fopen()的返回值)
+    返回值：
+        成功：实际读到的字符的ASCII
+        失败：-1
+```
+
+`fgetc` 在读取文件时，文件读写指针（参照光标理解）会自动后移。
+
+文本文件结尾处，系统会自动添加一个结束标记 EOF ——> -1（`#define EOF -1`），在文件关闭时由系统自动添加。
+
+```c
+// 利用 EOF 结束标记，按字符读文件。
+void read_file(void)
+{
+    char* filename = "03test.txt";  // 相对路径
+    int ret = 0;
+    char ch = 0;  // 存储读到的字符
+    FILE* fp = fopen(filename, "r");  // r方式打开现有文件。
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 从文件中读 字符
+    while (1)
+    {
+        ch = fgetc(fp);
+        //printf("ch = %c\n", ch);
+        if (ch == EOF)      // 已经读到文件末尾。
+        {
+            break;
+        }
+        printf("ch = %c\n", ch);  // 写到这，不读 EOF 结束标记。
+    }
+    ret = fclose(fp);
+    printf("ret = %d, ----------finish\n", ret);
+}
+```
+
+## 六、feof 函数
+
+作用：用来判断文件是否到达结尾。既能判断文本文件，也能判断二进制文件。
+
+特性：要想使用 `feof()` 判断到达文件结尾，在 `feof()` 调用之前，必须要有读文件的函数调用。
+
+```c
+int feof(FILE * stream);    // 判断是否到达文件结尾。
+    参：fopen()返回值
+    返回值：
+        到达文件结尾 ---> 非0【真】
+        没到达文件结尾 ---> 0【假】
+```
+
+示例：
+
+```c
+FILE* fp = fopen("04test.txt", "r");
+if (NULL == fp)
+{
+    perror("fopen error");
+    return -1;
+}
+while (1)
+{
+    printf("没有到达文件结尾\n");
+    // 没有这个fgetc函数读文件，feof函数，无法正常判断到达文件结尾。
+    fgetc(fp);   // 一次读一个字符，读到的字符直接丢弃！
+    if (feof(fp))
+    {
+        break;
+    }
+}
+fclose(fp);
+```
+
+## 七、按行读文件 fgets
+
+获取一个字符串，以 `\n` 作为结束标记，自动添加 `\0`。空间足够大时读入 `\n`，空间不足时舍弃 `\n`，但一定会预留空间存 `\0`。
+
+```c
+char * fgets(char *str, int size, FILE * stream);
+    参1：用来存储字符串的空间首地址
+    参2：空间大小
+    参3：数据来源的文件fp。
+    返回值：
+        成功：返回实际读到的字符串。
+        失败：NULL
+
+// 示例：
+char buf[10];
+printf("%s", fgets(buf, 10, stdin));  // "hello" ---> hello\n\0
+printf("%s", fgets(buf, 10, stdin));  // "helloworld" ---> helloworl\0
+```
+
+## 八、按行写文件 fputs
+
+写出一个字符串到文件中。如果字符串中没有 `\n`，不会写 `\n`。
+
+```c
+int fputs(const char * str, FILE * stream);
+    参1：待写出的字符串首地址。
+    参2：写出到的文件fp。
+    返回值：
+        成功：0
+        失败：-1
+
+// 示例：
+char *str = "hello";
+fputs(str, stdout);     // ----> 不添加 \n
+```
+
+**练习**：获取用户键盘输入，将所有内容写入到文件。规定：如果用户输入了 `:wq`，终止接收用户输入，将之前读到的数据保存成一个文件。
+
+提示：
+
+- 从 `stdin` 中读入到程序中，写出到文件 `fp`。
+- `feof()` 在本题中用不上，用 `strcmp` 判断读到的句子，是不是 `":wq\n"`。
+
+```c
+// 练习：接收用户键盘输入，写入文件。遇见 :wq 停止接收，保存成文件
+int main(void)
+{
+    // 创建文件，具备写权限
+    FILE* fp = fopen("05test.txt", "w");
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 创建一个空间，保存读到的数据内容
+    char buf[MAX] = { 0 };
+    // 从键盘读
+    while (1)
+    {
+        fgets(buf, MAX, stdin);
+        // 每读的一行数据，都判断是否是 ":wq\n"
+        if (strcmp(buf, ":wq\n") == 0)
+        {
+            break; // 用户输入了结束标志，终止读入，保存文件。
+        }
+        // 写入fp 文件中
+        fputs(buf, fp);
+    }
+    // 关闭文件。
+    fclose(fp);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 九、练习：文件版四则运算
+
+**说明**：文件中有表达式，读出表达式，运算，将结果写回文件。
+
+原始文件内容：
+
+```text
+//四则运算.txt
+10/2=
+10*3=
+4+3=
+8-6=
+```
+
+处理后期望结果：
+
+```text
+//四则运算.txt
+10/2=5
+10*3=30
+4+3=7
+8-6=2
+```
+
+**分析**：
+
+- `10/2=` ——> `fgets(buf, 4096, 四则运算.txt 对应的 fp)` ——> `"10/2=\n"` ——> 拆分出 `10 / 2 =`。
+- 拆分方式可选 `strtok()` 或 `sscanf()`，这里选 `sscanf()` 实现：
+  `sscanf(buf, "%d%c%d=\n", &a, &ch, &b)` ——> `a = 10, b = 2, ch = '/'`。
+- 根据运算符做运算：
+
+```c
+switch (ch) {
+    case '/':
+        ret = a / b;
+        break;
+    case '*':
+        ret = a * b;
+        break;
+    ...
+}
+```
+
+- `fopen("", "w")` 清空原来只有表达式没有结果的文件，将带有结果的表达式直接覆盖。
+- 拼接上述字符串，使用 `sprintf()` / `strcat()` ——> `"10/2=5\n10*3=30\n4+3=7\n8-6=2\n"`。
+- 最终写出：`char result[] = "10/2=5\n10*3=30\n4+3=7\n8-6=2\n"` ——> `fputs(result, fp)`。
+
+**实现**：
+
+```c
+#define BUF_MAX 4096
+// 写算式到文件中
+void write_file06(void)
+{
+    FILE* fp = fopen("C:/itcast/四则运算.txt", "w");
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return;  // 退出函数调用。
+    }
+    fputs("10/2=\n", fp);
+    fputs("10*3=\n", fp);
+    fputs("4+3=\n", fp);
+    fputs("10-2=\n", fp);
+    fclose(fp);
+}
+// 从文件中读算式，提取、拆分、计算、写回
+void read_file06(void)
+{
+    // 创建存储算式的 空间
+    char buf[BUF_MAX] = { 0 };
+    // 创建空间，保存算式及运算结果
+    char str[BUF_MAX] = { 0 };
+    // 创建空间，保存 4 个带有结果的算式
+    char result[BUF_MAX] = { 0 };
+    // 定义变量，保存运算数和运算符, 结果
+    int a, b, ret;
+    char ch;
+    FILE* fp = fopen("C:/itcast/四则运算.txt", "r");
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return; // 退出函数调用。
+    }
+    // 循环读取文件中的算式
+    while (1)
+    {
+        fgets(buf, BUF_MAX, fp);   // buf = "10/2=\n\0"
+        // 判断是否到达文件结尾。
+        if (feof(fp))
+        {
+            break;
+        }
+        // 将 sscanf 的返回值强转为 void
+        (void)sscanf(buf, "%d%c%d=\n", &a, &ch, &b);   // a:10  b:2  ch:'/'
+        // 根据不同的运算符，做不同运算
+        switch (ch) {
+        case '/':
+            ret = a / b;
+            break;
+        case '*':
+            ret = a * b;
+            break;
+        case '+':
+            ret = a + b;
+            break;
+        case '-':
+            ret = a - b;
+            break;
+        default:
+            printf("运算符错误\n");
+            break;
+        }
+        // 拼接 ret 到 算式上
+        sprintf(str, "%d%c%d=%d\n", a, ch, b, ret);   // 10/2=5
+        // 测试，是否能正常获取数据，拼接成带结果的表达式。
+        //printf("%s", str);
+        // 拼接 4 个子算式，到 一个 大空间中
+        strcat(result, str);
+    }
+    // 测试，拼接 4 个子算式，到 一个 大空间中，打印输出。
+    printf("%s", result);
+    fclose(fp);
+    // 清空原来没有结果的算式所在的文件。
+    fp = fopen("C:/itcast/四则运算.txt", "w");
+    if (NULL == fp)
+    {
+        perror("fopen error");
+        return;  // 退出函数调用。
+    }
+    // 将既有算式，又有结果的字符串，写入到同一个文件中。
+    fputs(result, fp);
+    fclose(fp);
+}
+int main(void)
+{
+    // 测试写出算式到文件。
+    write_file06();
+    getchar();  // 从键盘读一个字符，如果用户不输入，程序不继续，阻塞等待。
+    // 测试读取算式
+    read_file06();
+
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 十、getchar() 与 putchar() 函数
+
+- `getchar()`：从键盘获取一个字符，返回 ASCII。如果用户不输入，程序不向后执行（阻塞）。
+- `putchar()`：向屏幕输出一个字符。
+
+```c
+putchar('m');
+```

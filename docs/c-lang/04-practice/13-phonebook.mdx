@@ -1,0 +1,335 @@
+---
+sidebar_position: 1
+title: 练习：简易电话簿系统
+description: 使用结构体、数组和文件操作实现简易电话簿系统
+displayed_sidebar: notesSidebar
+---
+
+# 简易电话簿系统
+
+## 实现流程
+
+1. 定义联系人的数据结构（结构体）。
+2. 创建存储联系人数据的 `static` 全局数组，和记录联系人实际数量的 `static` 全局变量。
+3. 搭建电话簿的主业务逻辑框架（工作流程）。
+4. 定义并实现相应的功能函数：
+   1. 添加联系人
+   2. 删除联系人
+   3. 查找联系人
+   4. 显示联系人
+5. 组织上述功能函数的调用逻辑。
+6. 整体测试、微调。
+
+## 框架搭建 1
+
+### main.c
+
+```c
+// 管理程序运行的主业务逻辑
+#define _CRT_SECURE_NO_WARNINGS
+#include "telephoneBook.h"
+
+// 定义枚举，使用枚举常量描述事件
+enum {ADD=1, DEL, SREACH, SHOW, EXIT};
+
+// 显示菜单
+void show_menu(void)
+{
+    printf("--------显示菜单-------------\n");
+}
+
+// 电话簿启动、工作
+void startWorking(void)
+{
+    // 电话簿具体工作内容
+    while (1)
+    {
+        // 显示菜单
+        show_menu();
+        // 接收用户输入(1.添加，2.删除，3.查找，4.显示，5.退出)
+        int number = 0;
+        printf("请在菜单中选择您的需求：");
+        (void)scanf("%d", &number);
+        // 根据用户输入，作用相应操作
+        switch (number)
+        {
+        case ADD:
+            printf("1. 添加联系人\n");
+            break;
+        case DEL:
+            printf("2. 删除联系人\n");
+            break;
+        case SREACH:
+            printf("3. 查找联系人\n");
+            break;
+        case SHOW:
+            printf("4. 显示联系人\n");
+            break;
+        case EXIT:
+            printf("5. 退出系统\n");
+            return;     // 结束整个电话簿系统
+        default:
+            break;
+        }
+    }
+}
+
+int main(void)
+{
+    startWorking();
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### telephoneBook.c
+
+```c
+// 管理电话簿 相关信息
+#include "telephoneBook.h"
+
+// 定义 结构体数组 存储联系人
+static person_t numbers[MAX_PERSON_NUM];
+// 描述数组中，实际存储联系人个数
+static int size = 0;
+
+// 具体添加联系人
+// 具体删除联系人
+// 具体查找联系人
+// 显示所有联系人
+```
+
+### telephoneBook.h
+
+```c
+// #pragma once    // windows 系统自带防止头文件重复包含。
+#ifndef _TELEPHONE_BOOK_H_
+#define _TELEPHONE_BOOK_H_
+
+// 系统库头文件引入
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+
+// 函数声明
+void show_menu(void);
+
+// 宏定义，常量描述数组容量
+#define MAX_PERSON_NUM 2048
+
+// 定义联系人结构体
+typedef struct person {
+    char name[32];      // 联系人姓名
+    char phone[16];     // 联系人电话
+} person_t;
+
+#endif
+```
+
+## 框架搭建 2
+
+### main.c
+
+```c
+// 管理程序运行的主业务逻辑
+#define _CRT_SECURE_NO_WARNINGS
+#include "telephoneBook.h"
+
+// 定义枚举，使用枚举常量描述事件
+enum {ADD=1, DEL, SREACH, SHOW, EXIT};
+
+// 显示菜单
+void show_menu(void)
+{
+    printf("\n欢迎使用简易电话簿系统\n\n");
+    printf("\t1. 添加联系人\n\n");
+    printf("\t2. 删除联系人\n\n");
+    printf("\t3. 查找联系人\n\n");
+    printf("\t4. 显示联系人\n\n");
+    printf("\t5. 退出系统\n\n");
+}
+
+// ADD分支
+void add(void)
+{
+    printf("\n\t【姓名】为：");
+    char name[32] = { 0 };      // 临时获取用户输入，存储联系人姓名
+    (void)scanf("%s", name);
+    printf("\n\t【电话】为：");
+    char phone[16] = { 0 };     // 临时获取用户输入，存储联系人电话
+    (void)scanf("%s", phone);
+    // 相联系人数组中，添加一个新联系人
+    add_person(name, phone);
+    printf("\n联系人【%s】添加成功！\n", name);
+}
+
+// DEL分支
+void del(void)
+{
+    printf("\n\t待【删除】的联系人姓名为：");
+    char name[32] = { 0 };      // 临时获取用户输入，存储联系人姓名
+    (void)scanf("%s", name);
+    // 从联系人数组中，删除联系人
+    del_person(name);
+    printf("\n联系人【%s】已成功删除！\n", name);
+}
+
+// SEARCH分支
+void search(void)
+{
+    printf("\n\t待【查找】的联系人姓名为：");
+    char name[32] = { 0 };      // 临时获取用户输入，存储联系人姓名
+    (void)scanf("%s", name);
+    // 从联系人数组中，查找联系人的电话
+    char *phone = search_person(name);
+    if (NULL == phone)
+    {
+        printf("\n抱歉！电话簿中【%s】查无此人！\n", name);
+    }
+    else
+    {
+        printf("\n联系人【%s】的电话为：%s\n", name, phone);
+    }
+}
+
+// SHOW分支  --- 可以不封装该函数。直接调用 telephoneBook.c 中的 show_person()
+//void show(void)
+//{
+//  printf("4. 显示联系人\n");
+//}
+
+// 电话簿启动、工作
+void startWorking(void)
+{
+    // 电话簿具体工作内容
+    while (1)
+    {
+        // 显示菜单
+        show_menu();
+        // 接收用户输入(1.添加，2.删除，3.查找，4.显示，5.退出)
+        int number = 0;
+        printf("请在菜单中选择您的需求：");
+        (void)scanf("%d", &number);
+        // 根据用户输入，作用相应操作
+        switch (number)
+        {
+        case ADD:
+            add();
+            break;
+        case DEL:
+            del();
+            break;
+        case SREACH:
+            search();
+            break;
+        case SHOW:
+            show_person();
+            break;
+        case EXIT:
+            printf("\n欢迎下次再使用电话簿系统，再见~~\n");
+            return;     // 结束整个电话簿系统
+        default:
+            break;
+        }
+    }
+}
+
+int main(void)
+{
+    startWorking();
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### telephoneBook.c
+
+```c
+// 管理电话簿 相关信息
+#include "telephoneBook.h"
+
+// 定义 结构体数组 存储联系人
+static person_t numbers[MAX_PERSON_NUM];
+// 描述数组中，实际存储联系人个数
+static int size = 0;
+
+// 具体添加联系人
+void add_person(const char* name, const char* phone)
+{
+}
+
+// 具体删除联系人
+void del_person(const char* name)
+{
+}
+
+// 具体查找联系人  ---- 返回联系人 的电话
+char *search_person(const char* name)
+{
+    return NULL;
+}
+
+// 显示所有联系人
+void show_person(void)
+{
+}
+```
+
+### telephoneBook.h
+
+```c
+// #pragma once    // windows 系统自带防止头文件重复包含。
+#ifndef _TELEPHONE_BOOK_H_
+#define _TELEPHONE_BOOK_H_
+
+// 系统库头文件引入
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+
+// 函数声明
+void add_person(const char* name, const char* phone);
+void del_person(const char* name);
+char* search_person(const char* name);
+void show_person(void);
+void show_menu(void);
+void add(void);
+void del(void);
+void search(void);
+
+// 宏定义，常量描述数组容量
+#define MAX_PERSON_NUM 2048
+
+// 定义联系人结构体
+typedef struct person {
+    char name[32];      // 联系人姓名
+    char phone[16];     // 联系人电话
+} person_t;
+
+#endif
+```
+
+## 具体功能函数实现
+
+### 添加联系人
+
+```c
+// 具体添加联系人
+void add_person(const char* name, const char* phone)
+{
+    // 校验参数
+    if (NULL == name || NULL == phone)
+    {
+        printf("add_person 添加联系人失败！参数错误！\n");
+        return;
+    }
+    strcpy(numbers[size].name, name);    // 存姓名到数组
+    strcpy(numbers[size].phone, phone);  // 存电话到数组
+    ++size;  // 更新 size
+}
+```
+

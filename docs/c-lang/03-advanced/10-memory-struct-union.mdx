@@ -1,0 +1,673 @@
+---
+sidebar_position: 4
+title: 内存管理、结构体与联合体
+description: malloc/free/calloc/realloc、结构体定义与使用、联合体
+displayed_sidebar: notesSidebar
+---
+
+# 内存管理、结构体与联合体
+
+## 一、heap 空间操作
+
+### 二级指针对应的 heap 空间
+
+二级指针指向的堆空间，本质上是“指针的数组”，每个元素再指向一块真正存放数据的堆空间：
+
+```text
+int **p = int *p[3] ==> [int *, int *, int *] ==> [ [1, 2, 3, 4, 5], int *, int * ]
+```
+
+以 `int **p` 为例，申请、使用、释放的完整流程如下：
+
+```c
+int main(void)
+{
+    // 给外层空间malloc申请内存
+    int** p = malloc(sizeof(int *) * 3);
+    if (p == NULL)
+    {
+        printf("malloc error!\n");
+        return -1;
+    }
+    // 给 内层指针 申请 malloc 空间
+    for (size_t i = 0; i < 3; i++)
+    {
+        p[i] = malloc(sizeof(int) * 5);
+        if (p[i] == NULL)
+        {
+            printf("malloc p[i] error!\n");
+            return -1;
+        }
+    }
+    // 使用空间 -- 写
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 5; j++)
+        {
+            p[i][j] = i + j;    // 随意初始化值。
+        }
+    }
+    // 使用空间 -- 读
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 5; j++)
+        {
+            printf("%d ", *(*(p + i) + j));  // p[i][j] == *(p+i)[j] == *(*(p+i)+j)
+        }
+        printf("\n");
+    }
+    // free空间时，应该先释放 内层空间，再释放外层
+    for (size_t i = 0; i < 3; i++)
+    {
+        free(p[i]);
+        p[i] = NULL;
+    }
+    // 释放外层空间
+    free(p);
+    p = NULL;
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### 以 char **p 为例
+
+字符串的二级指针，同样遵循“先申请外层，再申请内层；先释放内层，再释放外层”的原则。注意内层不能用赋值 `=`，必须用 `strcpy`：
+
+```c
+// 先申请外层指针。
+char **p = malloc(sizeof(char *) * 5);
+// 申请内层指针
+for (int i = 0; i < 5; i++)
+{
+    p[i] = malloc(sizeof(char) * 10);  // 字符串长度 ≤ 10个字符。
+}
+// 写
+for (int i = 0; i < 5; i++)
+{
+    // p[i] = "hello";  错误！
+    strcpy(p[i], "hello");
+}
+// 释放内层
+for (int i = 0; i < 5; i++)
+{
+    free(p[i]);
+    p[i] = NULL;
+}
+// 释放外层
+free(p);
+p = NULL;
+```
+
+## 二、内存操作函数
+
+以下 4 个函数，专门用来操作 heap 内存。stack 由系统自动申请、自动释放。
+
+### memset
+
+绝大多数情况下，`memset` 用来将申请好的 heap 内存置 0，单位是**字节**。`memset` 函数按“字节”设置：
+
+- 置 0 —— 每一个字节都为 0。
+- 【了解】置 1 —— 每一个字节都为 1。例如 4 字节 == `0x01010101` == `16843009`。
+
+```c
+#include <string.h>
+void *memset(void *s, int c, size_t n);
+    参1：内存首地址。
+    参2：置成什么。一般传 0
+    参3：内存大小。单位：字节。
+    返回值：
+        成功：设置后的地址。
+        失败：NULL
+
+memset(首地址, 0, 空间大小);
+```
+
+示例：
+
+```c
+int* p = (int *)malloc(sizeof(int) * 10);
+if (p == NULL)
+{
+    printf("malloc error");
+    return -1;
+}
+// 将申请好的内存，全部置 0
+memset(p, 0, sizeof(int) * 10);
+// 直接打印申请好的空间内容。
+for (size_t i = 0; i < 10; i++)
+{
+    printf("%d ", p[i]);
+}
+free(p);
+p = NULL;
+```
+
+### memcpy
+
+以字节为单元，进行内存拷贝（`strcpy` 只能拷贝字符串）。
+
+```c
+void *memcpy(void *dest, const void *src, size_t n);
+```
+
+示例：
+
+```c
+// 拷贝内存中的整型数据
+int arr[10] = { 1, 2, 3, 4, 5 };
+int arr2[10];
+memcpy(arr2, arr, sizeof(int) * 10);
+for (size_t i = 0; i < 10; i++)
+{
+    printf("%d ", arr2[i]);
+}
+printf("\n");
+// 拷贝内存中的字符串
+char str[] = "hello world";
+char p[100];
+//memcpy(p, str, strlen(str)+1);  // 按内存拷贝
+strcpy(p, str);     // 字符串拷贝
+strncpy(p, str, strlen(str) + 1);
+printf("p = %s\n", p);
+```
+
+### memmove
+
+作用完全等同于 `memcpy`，以字节为单元进行内存拷贝，但它是**安全的**。
+
+当拷贝的 `src` 和 `dest` 之间存在重叠时，`memcpy` 由于底层实现原因有可能出错，因此推荐使用 `memmove`。
+
+```c
+void *memmove(void *dest, const void *src, size_t n);
+```
+
+### memcmp
+
+以字节为单位，比较内存！作用可以完全参照 `strncmp`。
+
+规则：`s1 == s2 --> 0`，`s1 > s2 --> 1`，`s1 < s2 --> -1`。
+
+```c
+int memcmp(const void *s1, const void *s2, size_t n);
+```
+
+示例：
+
+```c
+int arr1[] = { 14, 56, 22, 59, 21, 49, 25, 86, 89, 66, 71, 31, 98 };
+int arr2[] = { 14, 56, 29, 59, 21 };
+int ret = memcmp(arr1, arr2, 5 * sizeof(int));
+printf("ret = %d\n", ret);
+```
+
+## 三、内存常见问题
+
+1. **申请 0 字节空间**
+   C 语言中，允许申请 0 字节的内存空间。但 0 字节的空间，不能拿来使用。
+
+2. **free 空指针**
+   空 NULL 指针，反复 free，不会报错；非空的指针，反复 free，会报错！因此推荐 free 后的指针，一定置 NULL。
+
+3. **越界访问**
+   不允许！会导致程序崩溃。
+
+4. **free `++` 后的地址**
+   不能正常释放。如果程序中必须要使用 `p++`，应定义临时变量保存 `p` 值，以便 free 释放。
+
+## 四、函数内申请空间使用
+
+### A 函数内申请空间，A 函数使用
+
+注意上述 4 点即可：
+
+```c
+int *p = malloc(10);
+free(p);  p = NULL;
+```
+
+### A 函数内申请空间，B 函数使用
+
+**例 1：** 返回堆空间地址（有效）。
+
+```c
+// A函数申请空间， B函数使用。
+int* func1(void)
+{
+    int* p = malloc(4);
+    *p = 456;
+    return p;   // 返回的 heap 堆空间的地址值，函数调用结束，地址 有效。
+    //return &p;    // 返回的 stack 栈空间的地址值，函数调用结束，地址 无效。
+}
+int main(void)
+{
+    int* ret = NULL;
+    ret = func1();
+    printf("%d\n", *ret);
+    free(ret);
+    ret = NULL;
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+**例 2：** 通过返回值把堆地址带出来。
+
+```c
+// A函数申请空间， B函数使用。
+int* func2(int *p)
+{
+    p = malloc(4);
+    return p;
+}
+int main(void)
+{
+    int* ret = NULL;
+    ret = func2(ret);
+    *ret = 345;  // 写
+    printf("%d\n", *ret);  // 读
+    free(ret);
+    ret = NULL;
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+**例 3：** 传一级指针的地址（二级指针）把堆地址带出来。
+
+```c
+void func3(int** p)   // int** 是一级指针的地址。
+{
+    *p = malloc(4);
+}
+int main(void)
+{
+    int* ret = NULL;
+    func3(&ret);  // 传一级指针的地址。
+    // func3 函数，调用完成， ret指针，不再为 NULL ，而是指向一块有效的 heap 空间地址。
+    *ret = 789;
+    printf("%d\n", *ret);
+    free(ret);
+    ret = NULL;
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 五、结构体
+
+### 结构体定义语法
+
+复合类型（用户自定义类型）：`int []`、`int *`、`char **`、`struct student`。
+
+下面定义了一个结构体类型，名字叫 `struct student`。`struct student` 的地位等同于 `int`、`char`、`short`、`char *`、`int[]`、`long long`。通常结构体类型定义在全局位置，或者放到 `xxx.h` 头文件。
+
+```c
+// 定义结构体类型
+struct student {
+    int age;        // 成员变量 —— 属性。不能被赋初值。
+    int num;
+    char name[10];
+};
+// 用结构体类型，定义变量。
+struct student a;   // 定义了一个结构体类型的变量 a。
+```
+
+头文件写法（头文件守卫 + 4 种内容：`#include`、宏定义、函数声明、类型定义）：
+
+```c
+// 头文件守卫
+#ifndef _XXX_H_
+#define _XXX_H_
+// 4种：#include、宏定义、函数声明、类型定义 (结构体类型)。
+#endif
+```
+
+### 普通结构体变量
+
+定义语法：
+
+```c
+struct student stu1, stu2, stu3;  // 一次定义3个变量。没赋初值。
+struct student stu = {18, 1, "Andy"};
+```
+
+**访问成员方法**：使用 `.` 访问成员。
+
+```c
+// 定义一个结构体变量，赋初值。
+struct student stu = {18, 1, "Andy"};
+printf("first：age = %d, name = %s, num = %d\n",
+       stu.age, stu.name, stu.num);
+stu.age = 118;
+stu.num = 119;
+//stu.name = "cuihua";  // name为地址常量，不能被赋值。
+strcpy(stu.name, "cuihua");
+printf("last：age = %d, name = %s, num = %d\n",
+       stu.age, stu.name, stu.num);
+```
+
+普通变量也可以使用 `->` 访问成员（不常用）：
+
+```c
+(&stu)->age = 118;
+(&stu)->num = 119;
+```
+
+### 结构体指针变量
+
+定义语法：
+
+```c
+struct student *p1, *p2, *P3;  // 一次定义3个指针变量。 野指针！！！
+```
+
+避免野指针、空指针的两种初始化方式：
+
+1. 指向一个已有的结构体变量：
+
+```c
+struct student stu, *p1; // 一次定义两个变量：一个普通变量 stu，另一个指针变量 p1
+p1 = &stu;  // 给指针初始化。
+```
+
+2. 申请堆空间：
+
+```c
+struct student *p1;
+p1 = (struct student *)malloc(sizeof(struct student));
+```
+
+**访问成员方法**：使用 `->` 访问成员。指针也可以使用 `.` 访问成员（不常用）：
+
+```c
+(*p1).age = 18;
+strcpy((*p1).name, "cuihua");
+(*p1).num = 119;
+```
+
+### 非常规定义语法（了解）
+
+在定义结构体类型的同时定义变量，或使用匿名结构体：
+
+```c
+struct student {
+    int age;
+    int num;
+    char name[10];
+} s1, *s2;   // 定义结构体类型的同时，定义1个结构体变量 s1，一个指针变量 s2
+struct {        // 匿名结构体
+    int age;
+    int num;
+    char name[10];
+} s3, *s4; // 定义匿名结构体类型的同时，定义1个结构体变量 s3，一个指针变量 s4。
+          // 无法再定义其他变量。
+```
+
+### 结构体数组
+
+普通结构体数组：
+
+```c
+struct student {
+    int age;
+    int num;
+    char name[10];
+};
+struct student stu[5] = {{18, 1, "Andy"}, {19, 2, "Lucy"}, {118, 3, "李四"}};
+int n = sizeof(stu) / sizeof(stu[0]);
+for (int i = 0; i < n; i++)
+{
+    printf("age=%d,num=%d,name=%s\n", stu[i].age, stu[i].num, stu[i].name);
+}
+```
+
+用堆空间当作结构体数组使用（`malloc` 得到的空间）：
+
+```c
+struct student *stu;    // 野指针
+// 得到的heap堆空间，当成数组使用。
+stu = malloc(sizeof(struct student) * 3);  // 等价于 struct student stu[3];
+// 给数组的第1个元素赋值。
+stu[0].age = 11;
+stu[0].num = 111;
+strcpy(stu[0].name, "aaa");
+// 给数组的第2个元素赋值。
+stu[1].age = 22;
+stu[1].num = 222;
+strcpy(stu[1].name, "bbb");
+// 给数组的第3个元素赋值。
+stu[2].age = 33;
+stu[2].num = 333;
+strcpy(stu[2].name, "ccc");
+//int n = sizeof(stu) / sizeof(stu[0]);  // 不能求元素个数。
+for (int i = 0; i < 3; i++)
+{
+    printf("age=%d,num=%d,name=%s\n", stu[i].age, stu[i].num, stu[i].name);
+}
+free(stu);
+stu = NULL;
+```
+
+### 结构体嵌套
+
+结构体成员可以是另一个结构体类型的变量：
+
+```c
+struct person {
+    int age;
+    char name[10];
+};  // 类型
+struct student {
+    struct person man;  // person 类型的变量，作为 student 类型成员。
+    int id;
+    char addr[100];
+};
+int main(void)
+{
+    struct student stu = {{18, "zhaoliu"}, 1, "北京朝阳区"};
+    printf("age = %d\n", stu.man.age);
+    printf("name = %s\n", stu.man.name);
+    printf("addr = %s\n", stu.addr);
+    // 修改
+    stu.man.age = 119;
+    strcpy(stu.man.name, "张三丰");
+    strcpy(stu.addr, "武当山");
+    printf("\nage = %d\n", stu.man.age);
+    printf("name = %s\n", stu.man.name);
+    printf("addr = %s\n", stu.addr);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+### 结构体变量赋值
+
+主要应用于函数调用期间，实参给形参赋值。
+
+要求：结构体变量赋值时，必须**类型相同、成员个数一致、顺序一致**。
+
+### 做函数参数、返回值
+
+- **传值**：结构体变量做函数参数，将结构体变量的值（实参）拷贝一份给形参。形参、实参共 2 份结构体。
+- **传址**：结构体指针变量做函数参数，将结构体的地址值做实参，拷贝一份给形参。形参、实参共 1 份结构体。
+
+**结论**：结构体做函数参数、返回值时，通常采用“传址”方式，节省空间。
+
+### 含有指针成员的结构体
+
+申请内存：先申请外层空间，再申请内层空间。
+释放内存：先释放内层空间，再释放外层空间。
+
+用二级指针在函数中申请结构体空间：
+
+```c
+void func08(struct student **m)
+{
+    *m = malloc(sizeof(struct student));
+    if (NULL == *m)
+    {
+        printf("malloc error\n");
+        return -1;
+    }
+    //p->age = 100;
+    //p->num = 1;
+    //strcpy(p->name, "zyx");
+    (*m)->age = 100;
+    (*m)->num = 1;
+    strcpy((*m)->name, "zyx");
+}
+int main(void)
+{
+    struct student* p = NULL;  // 空指针
+    func08(&p);
+    //p->age = 100;
+    //p->num = 1;
+    //strcpy(p->name, "zyx");
+    printf("age=%d, name=%s, num=%d\n", p->age, p->name, p->num);
+    free(p);
+    p = NULL;
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+结构体含有指针成员（如 `char *name`）时，需要为外层结构体和内层指针成员分别申请、分别释放：
+
+```c
+struct student {
+    int age;
+    int num;
+    char *name;   // 野指针。
+};
+int main(void)
+{
+    struct student* p;  // 野指针。
+    // 给 p 初始化堆空间
+    p = malloc(sizeof(struct student));
+    if (NULL == p)
+    {
+        printf("malloc p error\n");
+        return -1;
+    }
+    // 给成员变量 name 开辟堆空间
+    p->name = malloc(sizeof(char) * 100);
+    if (NULL == p->name)
+    {
+        printf("malloc p->name error\n");
+        return -1;
+    }
+    // 写数据到结构体中
+    p->age = 100;
+    p->num = 10;
+    strcpy(p->name, "张三丰");
+    printf("age=%d, name=%s, num=%d\n", p->age, p->name, p->num);
+
+    // 先释放内层空间
+    free(p->name);
+    p->name = NULL;
+
+    free(p);
+    p = NULL;
+    return 0;
+}
+```
+
+## 六、typedef 关键字
+
+给现有的数据类型起别名。【注意】：不能定义新数据类型。通常使用 `typedef` 定义过的类型，添加一个 `_t` 结尾。
+
+定义语法：
+
+```c
+typedef 旧类型名 新类型名_t;
+```
+
+示例：
+
+```c
+typedef unsigned int size_t;  // 给 unsigned int 起别名叫 size_t
+
+int a;           // a 是变量名。
+typedef int a;   // a 变成了 类型名。   a b;  定义一个整型变量 b。（可读性差）
+```
+
+给结构体类型起别名：
+
+```c
+typedef struct student {
+    int age;
+    int num;
+    char *name;   // 野指针。
+} stu_t;            // 新类型名：stu_t;
+// 定义变量
+struct student stu1;  // 依然可以正常使用
+stu_t stu2;  // 定义一个 struct student 类型的变量。
+```
+
+使用 `typedef` 的好处：
+
+1. 简化类型名。
+2. 便于代码的修改和维护。
+
+例如用 `typedef long long int32_t;` 后，可批量替换成员类型（`int` ←→ `long long`）：
+
+```c
+typedef long long int32_t;   // int 《----》 long long
+struct student {
+    int age;
+    int32_t num;
+    char *name;   // 野指针。
+    int32_t num1;
+    int32_t num2;
+    int32_t num3;
+    int32_t num4;
+} stu_t;
+```
+
+## 七、共用体（联合体）
+
+特性：
+
+- 内部所有成员变量的地址一致，等同于整个联合体的地址。
+- 联合体的大小，是内部成员变量中最大的那个成员的大小（对齐）。
+- 修改其中一个成员的值，其他成员的值也跟着变化。
+
+定义语法：
+
+```c
+union test {
+    char ch;
+    short sh;
+    int var;
+};      // 创建一个联合体类型。
+```
+
+结合 `typedef` 使用，并验证以上特性：
+
+```c
+typedef union test {
+    char ch;
+    short sh;
+    int var;
+} test_t;
+int main(void)
+{
+    test_t obj;
+    obj.var = 0x87654321;
+    printf("&obj    = %p\n", &obj);
+    printf("&obj.ch = %p\n", &obj.ch);
+    printf("&obj.sh = %p\n", &obj.sh);
+    printf("&obj.var= %p\n", &obj.var);
+    printf("sizeof(test_t) = %u\n", sizeof(test_t));
+    printf("var = %#x\n", obj.var);
+    printf("sh = %#x\n", obj.sh);
+    printf("ch = %#x\n", obj.ch);
+    obj.ch = 0xAA;
+    printf("var = %#x\n", obj.var);
+    printf("sh = %#x\n", obj.sh);
+    printf("ch = %#x\n", obj.ch);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```

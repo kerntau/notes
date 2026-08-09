@@ -1,9 +1,12 @@
 {
-  "docsCount": 3,
+  "docsCount": 17,
   "blogCount": 0,
-  "totalFiles": 3,
-  "totalCJK": 2221,
-  "totalEng": 2589,
-  "totalWords": 4810,
-  "updatedAt": "2026-08-08"
+  "totalFiles": 17,
+  "totalCJK": 25547,
+  "totalEng": 14726,
+  "totalWords": 40273,
+  "updatedAt": "2026-08-09",
+  "gitCommit": "74f321f",
+  "gitMsg": "feat(docs): 整合 C 语言全量 MDX 笔记与导航栏动态 Git 悬浮信息",
+  "appVersion": "v74f321f"
 }

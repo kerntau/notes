@@ -48,6 +48,25 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+let gitCommit = 'latest';
+let gitMsg = '';
+let appVersion = 'v1.0.0';
+
+try {
+  const cp = require('child_process');
+  const rootDir = path.join(__dirname, '..');
+  gitCommit = cp.execSync('git rev-parse --short HEAD', { cwd: rootDir }).toString().trim();
+  gitMsg = cp.execSync('git log -1 --pretty=%s', { cwd: rootDir }).toString().trim();
+  
+  try {
+    const rawTag = cp.execSync('git describe --tags --always', { cwd: rootDir }).toString().trim();
+    appVersion = rawTag.startsWith('v') ? rawTag : `v${rawTag}`;
+  } catch (err) {
+    const pkg = require('../package.json');
+    appVersion = `v${pkg.version || '1.0.0'}`;
+  }
+} catch (e) {}
+
 const statsData = {
   docsCount: docsFiles.length,
   blogCount: blogFiles.length,
@@ -55,7 +74,10 @@ const statsData = {
   totalCJK,
   totalEng,
   totalWords,
-  updatedAt: new Date().toISOString().split('T')[0]
+  updatedAt: new Date().toISOString().split('T')[0],
+  gitCommit,
+  gitMsg,
+  appVersion
 };
 
 fs.writeFileSync(

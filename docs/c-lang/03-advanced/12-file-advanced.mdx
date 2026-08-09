@@ -1,0 +1,540 @@
+---
+sidebar_position: 6
+title: 文件操作进阶
+description: 文件随机读写、文件缓冲区、文件操作综合练习
+displayed_sidebar: notesSidebar
+---
+
+# 文件操作进阶
+
+## 格式化读写文件
+
+### fprintf() 函数
+
+`printf` ---- `sprintf` ---- `fprintf` 是同一组格式化输出函数：它们都是**变参函数**，参数列表中含有 `...`。最后一个固定参数通常是一个模式描述串（包含格式匹配符），函数实际调用时传递参数的个数、类型、顺序，由这个固定参数决定。
+
+三者的区别在于输出的目的地不同：`printf` 输出到屏幕，`sprintf` 输出到内存缓冲区，`fprintf` 输出到文件。
+
+```c
+printf("hello");
+printf("%s", "hello");
+printf("%d = %d%c%d\n", 10 + 5, 10, '+', 5);  // ----> 屏幕
+
+char buf[1024];  // 内存空间 --- 缓冲区
+sprintf(buf, "%d = %d%c%d\n", 10 + 5, 10, '+', 5);  // ----> buf 中
+```
+
+函数原型：
+
+```c
+#include <stdio.h>
+
+int fprintf(FILE *stream, const char *format, ...);  // ----> 文件 fp 中
+```
+
+测试：
+
+```c
+FILE* fp = fopen("abc", "w");  // 相对路径法
+if (!fp)   // NULL == fp
+{
+    perror("fopen error");
+    return -1;
+}
+fprintf(fp, "%d%c%d=%d\n", 10, '+', 7, 10 + 7);
+fclose(fp);
+```
+
+### fscanf() 函数
+
+`scanf` ---- `sscanf` ---- `fscanf` 是同一组格式化输入函数，区别同样在于数据来源不同：`scanf` 从键盘读取，`sscanf` 从字符串读取，`fscanf` 从文件读取。
+
+```c
+int m;
+scanf("%d", &m);          // 键盘 ---> m
+
+char str[] = "98";
+sscanf(str, "%d", &m);    // str ---> m
+
+FILE *fp = fopen("r");
+fscanf(fp, "%d", &m);     // fp 指向的文件中 ---> m
+```
+
+函数原型：
+
+```c
+int fscanf(FILE *stream, const char *format, ...);
+```
+
+测试：
+
+```c
+int a, b, c;
+char ch;
+FILE* fp = fopen("abc", "r");  // 相对路径法
+if (!fp)   // NULL == fp
+{
+    perror("fopen error");
+    return -1;
+}
+(void)fscanf(fp, "%d%c%d=%d\n", &a, &ch, &b, &c);
+printf("a = %d\n", a);
+printf("b = %d\n", b);
+printf("c = %d\n", c);
+printf("ch = %c\n", ch);
+printf("%d%c%d=%d\n", a, ch, b, c);
+fclose(fp);
+```
+
+## 格式化读写特性（扩展知识）
+
+### 返回值
+
+`fprintf()` 函数的返回值：
+
+- 成功：实际写入文件的字符个数。
+- 失败：-1
+
+`fscanf()` 函数的返回值：
+
+- 成功：正确匹配的个数。
+- 失败：-1
+
+### fscanf 读取特性
+
+1. 边界溢出问题：存储读取数据的空间，在使用之前应该进行清空，否则会出现边界溢出异常。清空方式：`memset(buf, 0, sizeof(buf));`
+2. `fscanf` 函数每次在调用的同时，都会判断下一次调用是否能成功匹配参 2。如果不匹配就提前结束读取文件（此时 `feof(fp)` 为真）。
+
+## 练习：文件版排序
+
+生成随机数，写入文件。将文件内乱序的随机数读出，排好序后再写回文件。
+
+```c
+// 生成随机数，写入文件
+void write_rand(void)
+{
+    FILE* fp = fopen("test03.txt", "w");  // 相对路径法
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 播种随机数种子
+    srand(time(NULL));
+    for (size_t i = 0; i < 10; i++)
+    {
+        //int num = rand() % 100;   // 0 -- 99
+        fprintf(fp, "%d\n", rand() % 100);   // 将生成的随机数写入到文件。
+    }
+
+    fclose(fp);
+}
+
+void BubbleSort(int* src, int len)
+{
+    for (int i = 0; i < len - 1; i++)
+    {
+        for (int j = 0; j < len - 1 - i; j++)
+        {
+            if (src[j] > src[j + 1])
+            {
+                int temp = src[j];
+                src[j] = src[j + 1];
+                src[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// 从文件中，读取随机数
+void read_rand(void)
+{
+    // 定义数组，存储 10 个随机数
+    int arr[10] = { 0 }, i = 0;
+    FILE* fp = fopen("test03.txt", "r");  // 相对路径法
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 循环读取文件内的随机数
+    while (1)
+    {
+        (void)fscanf(fp, "%d\n", &arr[i]);
+        i++;
+        if (feof(fp))   // 先存储，后判断，防止最后一个元素丢失。
+            break;
+    }
+    // 使用冒泡排序
+    BubbleSort(arr, sizeof(arr) / sizeof(arr[0]));
+    fclose(fp);  // 关闭随机数据的文件
+
+    // 清空 随机数据的文件
+    fp = fopen("test03.txt", "w");
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return -1;
+    }
+    for (size_t i = 0; i < 10; i++)
+    {
+        fprintf(fp, "%d\n", arr[i]);   // 将排好序的数组写入到文件。
+    }
+    fclose(fp);
+}
+
+int main(void)
+{
+    write_rand();
+    getchar();  // 从键盘获取一个字符，如果用户不输入，就阻塞程序，不向下执行。
+    read_rand();
+    printf("--------------finish\n");
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 按块读写文件
+
+- `fgetc` - `fputc`
+- `fgets` - `fputs`
+- `fprintf` - `fscanf`
+
+以上 3 组函数，默认用来处理**文本文件**。
+
+`fwrite` - `fread` 既可以处理文本文件，也可以处理**二进制文件**。
+
+### fwrite() 函数
+
+写出数据到文件中。
+
+```c
+#include <stdio.h>
+
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+//    参1：待写出的数据的首地址。
+//    参2：待写出数据的大小（一次写多大）
+//    参3：写出的个数（写多少次）   写出数据的总大小 = 参2 x 参3
+//    参4：文件 fp
+//    返回值：
+//        成功：永远返回参3。通常调用函数时，将参2传1，参3代表实际写出的字节数。
+//        失败：0
+// fwrite 函数，写入数据到文件中时，是按 二进制 写入。
+```
+
+测试：
+
+```c
+typedef struct student {
+    int age;
+    char name[10];
+    int num;
+} stu_t;
+
+// 按块写文件，fwrite
+void write_struct(void)
+{
+    // 定义结构体数组
+    stu_t stu[4] = {
+        18, "afei", 10,
+        20, "andy", 20,
+        30, "lily", 30,
+        16, "james", 40
+    };
+    FILE* fp = fopen("test04.txt", "w");  // 相对路径法
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return ;
+    }
+    int ret = fwrite(&stu[0], 1, sizeof(stu_t) * 4, fp);
+    if (ret == 0)
+    {
+        perror("fwrite error");
+        return ;
+    }
+    printf("ret = %d\n", ret);
+    fclose(fp);
+}
+```
+
+### fread() 函数
+
+从文件 fp 中读取数据。
+
+```c
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+//    参1：读取到的数据存放的地址。
+//    参2：一次读取数据的字节数（一次读多大）
+//    参3：读多少次         读出数据的总大小 = 参2 x 参3
+//    参4：文件 fp
+//    返回值：
+//        成功：永远返回参3。通常调用函数时，将参2传1，参3代表实际读出的字节数。
+//        0 ： 1) 读失败
+//             2) 到达文件结尾 == feof(fp) 为真
+```
+
+测试：
+
+```c
+typedef struct student {
+    int age;
+    char name[10];
+    int num;
+    // char addr[100];
+} stu_t;
+
+// 按块读文件，fread, 一次读一个 stu_t 元素
+void read_struct(void)
+{
+    FILE* fp = fopen("test04.txt", "r");  // 相对路径法
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return;
+    }
+    stu_t s1;
+    // 从文件中，按块读取，
+    int ret = fread(&s1, 1, sizeof(stu_t), fp);
+    printf("ret = %d\n", ret);
+    printf("age=%d, name=%s, num=%d\n", s1.age, s1.name, s1.num);
+    fclose(fp);
+}
+
+// 按块读文件，fread, 一次读所有 stu_t 元素
+void read_struct2(void)
+{
+    FILE* fp = fopen("test04.txt", "r");  // 相对路径法
+    if (!fp)   // NULL == fp
+    {
+        perror("fopen error");
+        return;
+    }
+    stu_t s1[10];  // stu_t *s1 = malloc(sizeof(stu_t) * 1024);
+    int i = 0;
+    // 从文件中，循环按块读取，
+    while (1)
+    {
+        int ret = fread(&s1[i], 1, sizeof(stu_t), fp);
+        //if (ret == 0)  // 效果一样。
+        if (feof(fp))    // 效果一样。
+        {
+            printf("读取到文件结尾\n");
+            break;
+        }
+        printf("age=%d, name=%s, num=%d\n", s1[i].age, s1[i].name, s1[i].num);
+        i++;
+    }
+    fclose(fp);
+}
+```
+
+## 练习：大文件拷贝
+
+已知一个任意类型的文件，对该文件复制，产生一个相同的新文件。
+
+实现思路：
+
+1. 打开两个文件，一个 `"r"`，另一个 `"w"`。
+2. 从 r 文件中 `fread`，`fwrite` 写到 w 文件中。
+3. 循环读，判断到达文件结尾，跳出循环。
+4. 关闭 2 个文件。
+
+注意：在 Windows 下，打开二进制文件（mp4、MP3、avi、jpg）读写，需要 `"b"`，如 `"rb"`、`"wb"`。
+
+```c
+int main(void)
+{
+    // 创建一个缓存区（内存空间），用来存储读到的数据。
+    char buf[4096] = { 0 };
+    int ret = 0;
+    FILE* rfp = fopen("C:\\Users\\afei\\Desktop\\TTTTTT\\11-午后回顾.avi", "rb");
+    if (!rfp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    FILE* wfp = fopen("mycopy.avi", "wb");
+    if (!rfp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    // 循环从文件中读，写到另一个文件中。
+    while (1)
+    {
+        ret = fread(buf, 1, sizeof(buf), rfp);
+        if (ret == 0)
+        {
+            break;  // 读到文件末尾。
+        }
+        printf("ret = %d\n", ret);
+        // 没有读到文件末尾，将实际读到的数据，"原封不动的"写入 wfp 中。
+        fwrite(buf, 1, ret, wfp);
+    }
+    fclose(rfp);
+    fclose(wfp);
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+## 随机位置读写文件
+
+**强调**：文件读写指针，在一个文件内只有一个。读、写都使用这一个。
+
+### fseek
+
+```c
+#include <stdio.h>
+
+int fseek(FILE *stream, long offset, int whence);  // 修改文件偏移量(文件读写指针)
+//    参1：文件 fp
+//    参2：偏移量（矢量：正数向后，负数向前）
+//    参3：偏移的起始位置
+//        SEEK_SET: 文件开头位置
+//        SEEK_CUR: 当前位置
+//        SEEK_END: 文件结尾位置
+//    返回值：成功：0   失败：-1
+```
+
+### ftell
+
+```c
+long ftell(FILE *stream);      // 获取文件偏移量（文件读写指针位置）
+//    返回值：从当前读写位置，到文件起始位置的偏移量。
+
+// 借助 ftell(fp) + fseek(fp, -50, SEEK_END) 来获取文件大小。
+```
+
+### rewind
+
+```c
+void rewind(FILE *stream);  // 回卷文件读写指针。将文件读写指针移动到起始位置。
+// 相当于：fseek(fp, 0, SEEK_SET);
+```
+
+## 其他文件相关操作
+
+### Linux 和 Windows 文件区别
+
+1. 对于二进制文件操作，Windows 下必须要使用 `"b"`；Linux 下二进制文件和文本文件操作没区别。
+2. Windows 下的回车换行为 `\r\n`（回车 `\r`，换行 `\n`）；Linux 下回车换行为 `\n`。
+3. 对文件指针：
+   - 先写后读可以直接操作，Windows 和 Linux 一致。
+   - 先读后写：Linux 无需修改；Windows 下需要在写操作之前，添加 `fseek(fp, 0, SEEK_CUR)` 函数调用，获取文件读写指针，再来写，才能生效。
+
+```c
+int main(int argc, char* argv[])
+{
+    FILE* fp = fopen("test1.txt", "r+");
+    char buf[6] = { 0 };
+    char* ptr = fgets(buf, 6, fp);
+    printf("buf=%s, ptr=%s\n", ptr, buf);
+    fseek(fp, 0, SEEK_CUR);  // 获取文件读写指针。如果没有这行，win 下程序会崩溃。
+    int ret = fputs("AAAAA", fp);
+    printf("ret = %d\n", ret);
+    fclose(fp);
+    return 0;
+}
+```
+
+### 获取文件状态
+
+```c
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int stat(const char *path, struct stat *buf);  // status
+//    参1：文件访问路径
+//    参2：文件属性结构体指针（传出参数：函数调用结束时，充当函数返回值）
+//    返回值：成功：0   失败：-1
+
+// 示例：
+struct stat buf;
+stat("待打开文件", &buf);
+buf.st_size;  // 获取文件的实际大小。
+```
+
+### 获取文件大小
+
+`ftell(fp) + fseek(fp, 0, SEEK_END)` 可以获取文件大小。此种方法获取文件大小必须要打开文件，而文件打开、关闭操作对于系统而言，系统资源消耗较大。
+
+除此之外也可用 `stat` 获取：
+
+```c
+struct stat buf;
+int ret = stat("test06.txt", &buf);   // buf 传出参数
+printf("ret = %d\n", ret);
+printf("获取文件的大小为：%d\n", buf.st_size);
+```
+
+### 删除、重命名文件
+
+```c
+int remove(const char *pathname);  // 删除
+int rename(const char *oldpath, const char *newpath);  // 重命名
+
+// 重命名：
+//int ret = rename("test06.txt", "哼哼哈嘿.txt");
+//printf("ret = %d\n", ret);
+
+// 删除文件
+int ret = remove("哼哼哈嘿.txt");
+printf("ret = %d\n", ret);
+```
+
+## 缓冲区刷新
+
+- 标准输出 -- `stdout` -- 标准输出缓冲区。写给屏幕的数据，都是先存入缓冲区中，由缓冲区一次性刷新到物理设备（屏幕）。
+- 标准输入 -- `stdin` -- 标准输入缓冲区。从键盘读取的数据，直接读到缓冲区，由缓冲区给程序提供数据。
+
+缓冲机制：
+
+1. **行缓冲**：遇到 `\n` 刷新缓冲区的数据到物理设备上。如 `printf()`。
+2. **全缓冲**：缓冲区存满，数据才刷新到物理设备上。如文件。
+3. **无缓冲**：缓冲区中只要有数据，立即刷新到物理设备。如 `perror`。
+
+手动刷新缓冲区的方法：当文件关闭时，会强制刷新缓冲区，写入磁盘 —— 隐式回收。
+
+隐式回收：关闭文件，刷新缓冲区，释放 malloc 申请的内存。
+
+```c
+#include <stdio.h>
+
+int fflush(FILE *stream);
+//    参：文件 fp
+//    返回值：成功：0   失败：-1
+```
+
+示例：
+
+```c
+int main(void)
+{
+    FILE* fp = fopen("test10.txt", "w+");
+    if (!fp)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    char ch = 0;
+    while (1)
+    {
+        (void)scanf("%c", &ch);
+        if (ch == ':')
+        {
+            break;
+        }
+        fputc(ch, fp);
+        // 手动刷新缓冲区，写入物理磁盘。
+        fflush(fp);
+    }
+    fclose(fp);   // 当文件关闭时，会强制刷新缓冲区，写入磁盘。
+    system("pause");
+    return EXIT_SUCCESS;
+}
+```
+
+
+

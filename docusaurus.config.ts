@@ -4,6 +4,21 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+let statsData = {
+  docsCount: 17,
+  totalWords: 40273,
+  updatedAt: new Date().toISOString().split('T')[0],
+  gitCommit: 'latest',
+  gitMsg: '更新笔记与资源',
+};
+
+try {
+  statsData = require('./src/data/stats.json');
+} catch (e) {}
+
+const formattedWords = (statsData.totalWords / 10000).toFixed(1) + ' 万字';
+const gitMsg = statsData.gitMsg || '更新文档';
+
 const config: Config = {
   title: '序记',
   tagline: '个人知识库与博客记录',
@@ -48,6 +63,8 @@ const config: Config = {
   projectName: 'notes',
 
   onBrokenLinks: 'throw',
+
+
 
   themes: [
     [
@@ -107,7 +124,7 @@ const config: Config = {
       },
       items: [
         {
-          to: '/docs/intro',
+          to: '/docs/c-lang/intro',
           label: '笔记',
           position: 'left',
           activeBaseRegex: '^/docs/(?!exam)',
@@ -119,6 +136,29 @@ const config: Config = {
           activeBaseRegex: '^/docs/exam/',
         },
         {to: '/about', label: '关于', position: 'left'},
+        {
+          type: 'dropdown',
+          label: statsData.appVersion || 'v1.0.0',
+          position: 'right',
+          items: [
+            {
+              label: `更新：${statsData.updatedAt}`,
+              to: '/docs/c-lang/intro',
+            },
+            {
+              label: `提交：${statsData.gitCommit}`,
+              href: `https://github.com/kerntau/notes/commit/${statsData.gitCommit}`,
+            },
+            {
+              label: `日志：${gitMsg}`,
+              href: `https://github.com/kerntau/notes/commit/${statsData.gitCommit}`,
+            },
+            {
+              label: `统计：${statsData.docsCount} 篇 · ${formattedWords}`,
+              to: '/docs/c-lang/intro',
+            },
+          ],
+        },
       ],
     },
     footer: {
