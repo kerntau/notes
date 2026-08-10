@@ -5,10 +5,10 @@
   "totalCJK": 25547,
   "totalEng": 14726,
   "totalWords": 40273,
-  "updatedAt": "2026-08-09",
-  "gitCommit": "d376bce",
-  "gitMsg": "feat(docs): 整合 C 语言全量 MDX 笔记与导航栏动态 Git 悬浮信息",
+  "updatedAt": "2026-08-10",
+  "gitCommit": "e422c59",
+  "gitMsg": "feat(navbar): 新增动态 Git 版本悬浮组件与移动端响应式布局",
   "gitAuthor": "kerntau",
-  "gitDate": "2026-08-09 21:31",
-  "appVersion": "d376bce"
+  "gitDate": "2026-08-09 22:07",
+  "appVersion": "e422c59"
 }
