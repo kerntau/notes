@@ -221,20 +221,20 @@
 
 /* 致谢与协议模块 */
 .noticeSection {
-  margin-top: 0.75rem;
+  margin-top: 1.25rem;
 }
 
 .noticeGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.85rem;
+  gap: 1.25rem;
 }
 
 .noticeItem {
   background-color: var(--ifm-card-background-color, var(--ifm-background-surface-color));
   border: 1px solid var(--ifm-color-emphasis-200);
   border-radius: 14px;
-  padding: 0.85rem 1.15rem;
+  padding: 1.15rem 1.35rem;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
@@ -245,8 +245,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.55rem;
-  margin-bottom: 0.45rem;
+  gap: 0.65rem;
+  margin-bottom: 0.6rem;
   width: 100%;
 }
 
@@ -275,10 +275,10 @@
 }
 
 .noticeText {
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   color: var(--ifm-color-content-secondary);
-  line-height: 1.5;
-  margin-bottom: 0.35rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
 }
 
 .noticeLink {
