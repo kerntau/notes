@@ -777,6 +777,27 @@ a:not([class*='button']):not([class*='navbar']):not([class*='dropdown']):not([cl
   scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
 }
 
+/* 导航栏右侧组件排列顺序：搜索框 -> 深色模式切换 -> Git 版本号 */
+.navbar__items--right > .navbar__search,
+.navbar__items--right > [class*='searchBox'],
+.navbar__items--right > [class*='navbarSearchContainer'],
+.navbar__items--right > [class*='searchBar'] {
+  order: 1 !important;
+}
+
+.navbar__items--right > [class*='colorModeToggle'],
+.navbar__items--right > [class*='toggle_'],
+.navbar__items--right > button[class*='clean-btn'] {
+  order: 2 !important;
+  margin-right: 4px;
+}
+
+.navbar__items--right > [class*='container'] {
+  order: 3 !important;
+  margin-left: 6px;
+}
+
+
 
 
 
