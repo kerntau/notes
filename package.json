@@ -15,7 +15,10 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "studio": "pnpm --dir studio/server start",
+    "studio:dev": "pnpm --dir studio/server dev",
+    "studio:build": "pnpm --dir studio/client build"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",

@@ -5,10 +5,10 @@
   "totalCJK": 25547,
   "totalEng": 14726,
   "totalWords": 40273,
-  "updatedAt": "2026-08-10",
-  "gitCommit": "e422c59",
-  "gitMsg": "feat(navbar): 新增动态 Git 版本悬浮组件与移动端响应式布局",
+  "updatedAt": "2026-08-23",
+  "gitCommit": "6e95edf",
+  "gitMsg": "chore(assets): 清理未使用的无用图片资产与冗余代码",
   "gitAuthor": "kerntau",
-  "gitDate": "2026-08-09 22:07",
-  "appVersion": "e422c59"
+  "gitDate": "2026-08-10 21:38",
+  "appVersion": "6e95edf"
 }
