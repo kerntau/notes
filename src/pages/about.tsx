@@ -54,7 +54,7 @@ export default function About(): React.JSX.Element {
 
           {/* 简介说明与联系邮箱 */}
           <p className={styles.description}>
-            持续记录 2027 年湖北省专升本备考笔记、系统化学习心得与技术探索成果。如有任何疑问、学习交流或建议反馈，欢迎发送邮件至 <a href="mailto:i@curn.me" className={styles.emailText}>i@curn.me</a> 与我联系。
+            持续记录 2027 年湖北省专升本备考笔记、系统化学习心得与技术探索成果。如有任何疑问、学习交流或建议反馈，欢迎发送邮件至 <a href="mailto:i@chent.co" className={styles.emailText}>i@chent.co</a> 与我联系。
           </p>
 
           {/* 贡献热力图区域 */}
