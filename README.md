@@ -77,20 +77,6 @@ pnpm serve
 
 build/ 可部署到 GitHub Pages、EdgeOne Pages 或其他静态托管。发布前验证文档路由、搜索索引、移动端抽屉和明暗主题。
 
-## 07. ENGINEERING CONTRACT // 工程契约
-
-- 文档 front matter 和侧边栏配置必须通过构建。
-- 学习资料的版权声明不能被自动化脚本覆盖。
-- 主题 swizzle 改动需同时验证桌面与移动端。
-- studio/ 变更不得成为生产站点的隐式依赖。
-
-## 08. ROADMAP // 演进路线
-
-- [x] 响应式 docs/blog 知识库
-- [x] 倒计时、搜索和暗色主题
-- [ ] 更细的课程进度统计
-- [ ] 可选的私有笔记与权限层
-
-## 09. LICENSE // 许可证
+## 07. LICENSE // 许可证
 
 笔记和资料默认遵循 CC BY-NC-ND 4.0；代码部分请以仓库声明为准。
